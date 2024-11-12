@@ -5,9 +5,13 @@ import hyundai.movie.domains.member.client.KakaoApiClient;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.member.dto.KakaoTokenResponseDto;
 import hyundai.movie.domains.member.dto.KakaoMemberResponseDto;
+import hyundai.movie.domains.member.exception.MemberNotFoundException;
+import hyundai.movie.global.auth.jwt.RefreshTokenProvider;
 import hyundai.movie.global.auth.token.AuthTokens;
 import hyundai.movie.global.auth.token.AuthTokensGenerator;
+import hyundai.movie.global.auth.token.JwtTokenReissue;
 import jakarta.transaction.Transactional;
+import javax.naming.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ public class OAuthLoginService {
     private final KakaoApiClient kakaoApiClient;
     private final MemberService memberService;
     private final AuthTokensGenerator authTokensGenerator;
+    private final JwtTokenReissue jwtTokenReissue;
 
     public MemberLoginResponse kakaoLogin(String authorizationCode) {
 
@@ -35,5 +40,9 @@ public class OAuthLoginService {
         AuthTokens authTokens = authTokensGenerator.generate(member.getId());
 
         return MemberLoginResponse.of(member, authTokens);
+    }
+
+    public AuthTokens refresh(String refreshToken) throws AuthenticationException, MemberNotFoundException {
+            return jwtTokenReissue.reissue(refreshToken);
     }
 }
