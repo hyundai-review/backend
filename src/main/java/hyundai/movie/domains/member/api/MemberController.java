@@ -31,6 +31,12 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/delete")
+    public ResponseEntity<Void> deleteMember() {
+        memberService.deactivateMember();
+        return ResponseEntity.ok().build();
+    }
+
 
 
 

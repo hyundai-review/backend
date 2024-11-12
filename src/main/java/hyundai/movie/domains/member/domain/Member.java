@@ -35,4 +35,10 @@ public class Member extends BaseTimeEntity {
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
     }
+
+    // 회원 탈퇴 (isActive = false로 바꿔줌)
+    public void deactivate() {
+        this.isActive = false;
+    }
+
 }

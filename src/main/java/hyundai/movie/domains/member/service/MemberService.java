@@ -5,6 +5,7 @@ import hyundai.movie.domains.member.api.response.NicknameUpdateResponse;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.member.dto.KakaoMemberResponseDto;
 import hyundai.movie.domains.member.repository.MemberRepository;
+import hyundai.movie.global.annotation.CheckActiveUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @CheckActiveUser
     public MemberInfoResponse getMemberInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -54,6 +56,7 @@ public class MemberService {
                 .build();
     }
 
+    @CheckActiveUser
     public NicknameUpdateResponse updateNickname(String newNickname) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = (Long) authentication.getPrincipal();
@@ -73,6 +76,21 @@ public class MemberService {
                 .nickname(member.getNickname())
                 .build();
     }
+
+    public void deactivateMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        member.deactivate();
+        memberRepository.save(member);
+
+        log.info("MEMBER ID : " + memberId + "의 계정이 비활성화되었습니다.");
+    }
+
+
 
 
 }
