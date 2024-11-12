@@ -1,2 +1,3 @@
 ## backend
-github webhook test
+
+1. application-secret 적용

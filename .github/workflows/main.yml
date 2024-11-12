@@ -26,6 +26,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Create application-secret.properties
+        run: |
+          cat << EOF > src/main/resources/application-secret.properties
+          # RDS
+          spring.datasource.url=${{ secrets.RDS_URL }}
+          spring.datasource.username=${{ secrets.RDS_USERNAME }}
+          spring.datasource.password=${{ secrets.RDS_PASSWORD }}
+
+          # JWT
+          jwt.secret-key=${{ secrets.JWT_SECRET_KEY }}
+          jwt.access-token-expiration=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}
+          jwt.refresh-token-expiration=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
+
+          # Kakao
+          kakao.client.id=${{ secrets.KAKAO_CLIENT_ID }}
+          kakao.redirect.uri=${{ secrets.KAKAO_REDIRECT_URI }}
+          EOF
+
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
