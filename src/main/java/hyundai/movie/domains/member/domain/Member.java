@@ -18,17 +18,16 @@ public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nickname;
-
     private String profile;
-
+    private String providerId;
     private Boolean isActive;
 
     @Builder
-    public Member(String nickname, String profile, Boolean isActive) {
+    public Member(String nickname, String providerId, String profile, Boolean isActive) {
         this.nickname = nickname;
         this.profile = profile;
+        this.providerId = providerId;
         this.isActive = isActive;
     }
 }
