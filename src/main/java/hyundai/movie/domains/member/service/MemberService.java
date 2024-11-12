@@ -4,6 +4,7 @@ import hyundai.movie.domains.member.api.response.MemberInfoResponse;
 import hyundai.movie.domains.member.api.response.NicknameUpdateResponse;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.member.dto.KakaoMemberResponseDto;
+import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.member.repository.MemberRepository;
 import hyundai.movie.global.annotation.CheckActiveUser;
 import jakarta.transaction.Transactional;
@@ -23,22 +24,44 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Member loginOrRegister(KakaoMemberResponseDto kakaoMemberInfo) {
+//        return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
+//                .orElseGet(() -> registerMember(kakaoMemberInfo));
+        // providerId로 기존 회원을 찾음
+        // providerId로 기존 회원 조회
         return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
-                .orElseGet(() -> registerMember(kakaoMemberInfo));
+                .map(existingMember -> {
+                    // 기존 회원이 탈퇴한 상태라면 재활성화 처리
+                    if (!existingMember.getIsActive()) {
+                        reactivateMember(existingMember);
+                        log.info("탈퇴했던 계정이 재활성화되었습니다. MEMBER ID: {}", existingMember.getId());
+                    }
+                    return existingMember;
+                })
+                .orElseGet(() -> registerNewMember(kakaoMemberInfo)); // 회원이 없으면 신규 회원 가입
     }
 
-    private Member registerMember(KakaoMemberResponseDto kakaoMemberInfo) {
+    /**
+     * 회원 재활성화 메서드
+     */
+    private void reactivateMember(Member member) {
+        member.reactivate(); // isActive를 true로 변경
+        memberRepository.save(member); // 업데이트 저장
+    }
 
-
-        Member member = Member.builder()
+    /**
+     * 신규 회원 가입 메서드
+     */
+    private Member registerNewMember(KakaoMemberResponseDto kakaoMemberInfo) {
+        Member newMember = Member.builder()
                 .nickname(generateRandomNickname())
                 .profile(kakaoMemberInfo.getProfileImageUrl())
                 .providerId(kakaoMemberInfo.getId().toString())
                 .isActive(true)
                 .build();
 
-        return memberRepository.save(member);
+        return memberRepository.save(newMember);
     }
+
 
     @CheckActiveUser
     public MemberInfoResponse getMemberInfo() {
@@ -49,7 +72,7 @@ public class MemberService {
         log.info("MEMBER ID : " + memberId.toString());
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
         // 조회된 Member 객체를 기반으로 MemberInfoResponse를 생성하여 반환
         return MemberInfoResponse.builder()
@@ -65,7 +88,7 @@ public class MemberService {
         Long memberId = (Long) authentication.getPrincipal();
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
         // Member 엔티티의 닉네임을 업데이트
         member.updateNickname(newNickname);
@@ -85,7 +108,7 @@ public class MemberService {
         Long memberId = (Long) authentication.getPrincipal();
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
         member.deactivate();
         memberRepository.save(member);
