@@ -30,4 +30,9 @@ public class Member extends BaseTimeEntity {
         this.providerId = providerId;
         this.isActive = isActive;
     }
+
+    // 닉네임 업데이트 메서드
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 }
