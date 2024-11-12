@@ -17,7 +17,4 @@ COPY --from=builder /build/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
-
-# TODO : application-dev 대신 application-prod 사용
-# TODO : spring security 관련 세팅
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "-Dspring.profiles.include=secret", "app.jar"]
