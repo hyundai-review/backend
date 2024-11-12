@@ -26,31 +26,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create application-secret.properties
-        run: |
-          cat << EOF > src/main/resources/application-secret.properties
-          # RDS
-          spring.datasource.url=${{ secrets.RDS_URL }}
-          spring.datasource.username=${{ secrets.RDS_USERNAME }}
-          spring.datasource.password=${{ secrets.RDS_PASSWORD }}
-
-          # JWT
-          jwt.secret-key=${{ secrets.JWT_SECRET_KEY }}
-          jwt.access-token-expiration=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}
-          jwt.refresh-token-expiration=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
-
-          # Kakao
-          kakao.client.id=${{ secrets.KAKAO_CLIENT_ID }}
-          kakao.redirect.uri=${{ secrets.KAKAO_REDIRECT_URI }}
-          EOF
-
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest
+          build-args: |
+            RDS_URL=${{ secrets.RDS_URL }}
+            RDS_USERNAME=${{ secrets.RDS_USERNAME }}
+            RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}
+            JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
