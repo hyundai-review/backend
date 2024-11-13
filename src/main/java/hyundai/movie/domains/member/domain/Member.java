@@ -41,4 +41,9 @@ public class Member extends BaseTimeEntity {
         this.isActive = false;
     }
 
+    // 재활성화 처리
+    public void reactivate() {
+        this.isActive = true;
+    }
+
 }

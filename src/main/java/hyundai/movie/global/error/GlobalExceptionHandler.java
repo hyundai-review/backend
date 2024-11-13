@@ -1,5 +1,6 @@
 package hyundai.movie.global.error;
 
+import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.global.common.reponse.ErrorResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -36,20 +37,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponse> handleNoSuchElementException(
-            NoSuchElementException ex) {
-        log.error("데이터를 찾을 수 없음", ex);
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", ex.getMessage());
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(
-                        HttpStatus.NOT_FOUND.value(),
-                        "리소스를 찾을 수 없습니다",
-                        errors));
-    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(
@@ -93,6 +81,23 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "서버 오류 발생",
+                        errors));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMemberNotFoundException(MemberNotFoundException ex) {
+        log.error("회원 정보를 찾을 수 없음", ex);
+
+        // 오류 메시지를 담을 Map 생성
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+
+        // ErrorResponse를 반환하여 클라이언트에게 예외 정보를 전달
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        "회원 정보를 찾을 수 없습니다",
                         errors));
     }
 }
