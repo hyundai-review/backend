@@ -1,7 +1,6 @@
-package hyundai.movie.domains.crawler.dto;
+package hyundai.movie.domains.external.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hyundai.movie.domains.movie.domain.Movie;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

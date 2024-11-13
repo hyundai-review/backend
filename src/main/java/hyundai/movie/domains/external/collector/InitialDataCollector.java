@@ -1,10 +1,10 @@
-package hyundai.movie.domains.crawler.collector;
+package hyundai.movie.domains.external.collector;
 
-import hyundai.movie.domains.crawler.client.TmdbApiClient;
-import hyundai.movie.domains.crawler.dto.TmdbCastDto;
-import hyundai.movie.domains.crawler.dto.TmdbCrewDto;
-import hyundai.movie.domains.crawler.dto.TmdbGenreDto;
-import hyundai.movie.domains.crawler.dto.TmdbMovieDto;
+import hyundai.movie.domains.external.client.TmdbApiClient;
+import hyundai.movie.domains.external.dto.TmdbCastDto;
+import hyundai.movie.domains.external.dto.TmdbCrewDto;
+import hyundai.movie.domains.external.dto.TmdbGenreDto;
+import hyundai.movie.domains.external.dto.TmdbMovieDto;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

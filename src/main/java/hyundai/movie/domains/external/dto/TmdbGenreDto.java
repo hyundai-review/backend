@@ -1,4 +1,4 @@
-package hyundai.movie.domains.crawler.dto;
+package hyundai.movie.domains.external.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

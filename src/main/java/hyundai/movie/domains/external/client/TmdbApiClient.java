@@ -1,14 +1,12 @@
-package hyundai.movie.domains.crawler.client;
+package hyundai.movie.domains.external.client;
 
-import hyundai.movie.domains.crawler.dto.TmdbGenreDto;
-import hyundai.movie.domains.crawler.dto.TmdbGenreListDto;
-import hyundai.movie.domains.crawler.dto.TmdbMovieDto;
-import hyundai.movie.domains.crawler.dto.TmdbMovieListDto;
+import hyundai.movie.domains.external.dto.TmdbGenreDto;
+import hyundai.movie.domains.external.dto.TmdbGenreListDto;
+import hyundai.movie.domains.external.dto.TmdbMovieDto;
+import hyundai.movie.domains.external.dto.TmdbMovieListDto;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
