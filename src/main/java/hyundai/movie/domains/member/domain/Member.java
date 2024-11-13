@@ -46,4 +46,13 @@ public class Member extends BaseTimeEntity {
         this.isActive = true;
     }
 
+    // 프로필 이미지 URL을 업데이트하는 세터 메서드 추가
+    public void updateProfile(String profile) {
+        this.profile = profile;
+    }
+
+
+
+
+
 }
