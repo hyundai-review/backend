@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +32,13 @@ public class MemberController {
         NicknameUpdateResponse response = memberService.updateNickname(request.getNickname());
         return ResponseEntity.ok(response);
     }
+    @PutMapping("/profile")
+    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile file) {
+        String imageUrl = memberService.updateProfileImage(file);
+        return ResponseEntity.ok(imageUrl); // 업로드된 이미지 URL 반환
+    }
+
+
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteMember() {
