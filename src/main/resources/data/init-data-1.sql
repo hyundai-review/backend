@@ -1,3 +1,6 @@
+INSERT INTO member (nickname, provider_id, profile, is_active, created_at, updated_at)
+VALUES ('아보카도파김치', 'test-provider-id', 'http://example.com/profile1.jpg', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 INSERT  INTO genre (name, created_at, updated_at)
 VALUES ('액션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
