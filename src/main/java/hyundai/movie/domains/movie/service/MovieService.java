@@ -1,12 +1,12 @@
 package hyundai.movie.domains.movie.service;
 
 import hyundai.movie.domains.movie.api.response.BoxOfficeListResponse;
+import hyundai.movie.domains.movie.api.response.MovieItemResponse;
 import hyundai.movie.domains.movie.api.response.MovieResponse;
 import hyundai.movie.domains.movie.domain.BoxOffice;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.BoxOfficeRepository;
-import hyundai.movie.domains.movie.repository.GenreRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -38,6 +40,14 @@ public class MovieService {
 //                .map(MovieResponse::new)
 //                .collect(Collectors.toList());
 //    }
+
+    @Transactional
+    public Slice<MovieItemResponse> searchMovies(String keyword, Pageable pageable) {
+        // todo: tmdb에서 데이터 끌어와서 저장하기 isFetch??
+
+        return movieRepository.searchByTitleContaining(keyword, pageable)
+                .map(MovieItemResponse::from);
+    }
 
     @Transactional
     public BoxOfficeListResponse getBoxOfficeMovieList() {
