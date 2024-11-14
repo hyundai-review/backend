@@ -136,13 +136,13 @@ public class TmdbApiClient {
         return allMovies;
     }
 
-    public TmdbImageListDto getMovieImages(Long tmdbId) {
+    public TmdbImageListDto getMovieImages(Long tmdbId, String language) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{movie_id}/images")
                         .queryParam("api_key", apiKey)
                         .queryParam("language", "ko-KR")
-                        .queryParam("include_image_language", "ko,null")  // 한국어 없으면 기본 이미지도 포함
+                        .queryParam("include_image_language", language)
                         .build(tmdbId))
                 .retrieve()
                 .bodyToMono(TmdbImageListDto.class)

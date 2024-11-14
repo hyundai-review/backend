@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InitialDataCollector {
     private final TmdbApiClient tmdbApiClient;
-    private static final int TOTAL_MOVIES = 256;
+    private static final int TOTAL_MOVIES = 512;
     private static final int MOVIES_PER_CATEGORY = TOTAL_MOVIES / 2;
     private static final int SQL_BATCH_SIZE = 1000;
 
@@ -238,7 +238,7 @@ public class InitialDataCollector {
                 .toList()) {
             statements.add(String.format("""
                INSERT IGNORE INTO actor (tmdb_id, name, profile, created_at, updated_at)
-               SELECT '%s', '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+               SELECT %d, '%s', '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
                WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '%s');
                """,
                     cast.getId(),
