@@ -18,7 +18,6 @@ import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.ActorRepository;
 import hyundai.movie.domains.movie.repository.DirectorRepository;
 import hyundai.movie.domains.movie.repository.GenreRepository;
-import hyundai.movie.domains.movie.repository.MovieImageRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -35,14 +34,13 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MovieInitializationService {
+public class MovieFetchService {
 
     private final TmdbApiClient tmdbApiClient;
     private final MovieRepository movieRepository;
     private final ActorRepository actorRepository;
     private final DirectorRepository directorRepository;
     private final GenreRepository genreRepository;
-    private final MovieImageRepository movieImageRepository;
     private Set<Long> nowPlayingMovieIds = new HashSet<>();
 
     public Movie initializeMovieById(Long tmdbId) {
@@ -131,7 +129,7 @@ public class MovieInitializationService {
         });
 
         // 3. 배우 연결
-        tmdbMovie.getCredits().getCast().forEach(castDto -> {
+        tmdbMovie.getCredits().getCast().stream().limit(5).forEach(castDto -> {
             Actor actor = actorRepository.findByTmdbId(castDto.getId())
                     .orElseGet(() -> createActor(castDto));
 
@@ -168,7 +166,6 @@ public class MovieInitializationService {
                     .filePath(imageDto.getFilePath())
                     .isPoster(true)
                     .build();
-            movieImageRepository.save(movieImage);
             movie.getImages().add(movieImage);
         });
 
@@ -182,7 +179,6 @@ public class MovieInitializationService {
                     .filePath(imageDto.getFilePath())
                     .isPoster(false)  // backdrop
                     .build();
-            movieImageRepository.save(movieImage);
             movie.getImages().add(movieImage);
         });
 
@@ -201,6 +197,7 @@ public class MovieInitializationService {
 
     private Actor createActor(TmdbCastDto dto) {
         Actor actor = Actor.builder()
+                .tmdbId(dto.getId())
                 .profile(dto.getProfilePath())
                 .name(dto.getName())
                 .build();
@@ -210,6 +207,7 @@ public class MovieInitializationService {
 
     private Director createDirector(TmdbCrewDto dto) {
         Director director = Director.builder()
+                .tmdbId(dto.getId())
                 .profile(dto.getProfilePath())
                 .name(dto.getName())
                 .build();
