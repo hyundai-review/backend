@@ -41,6 +41,14 @@ jobs:
             JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
+            TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}
+            TMDB_API_URL=${{ secrets.TMDB_API_URL }}
+            KOBIS_API_KEY=${{ secrets.KOBIS_API_KEY }}
+            KOBIS_API_URL=${{ secrets.KOBIS_API_URL }}
+            AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+            AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
