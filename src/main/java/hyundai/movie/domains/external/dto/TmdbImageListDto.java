@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class TmdbImageListDto {
+    private Long id;
     private List<TmdbImageDto> posters;
     private List<TmdbImageDto> backdrops;
 }

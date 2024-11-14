@@ -8,8 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +28,11 @@ public class BoxOffice extends BaseTimeEntity {
     private Integer rank;
 
     private String targetDate;
+
+    @Builder
+    public BoxOffice(Movie movie, Integer rank, String targetDate) {
+        this.movie = movie;
+        this.rank = rank;
+        this.targetDate = targetDate;
+    }
 }
