@@ -1,10 +1,10 @@
-package hyundai.movie.domains.crawler.collector;
+package hyundai.movie.domains.external.collector;
 
-import hyundai.movie.domains.crawler.client.TmdbApiClient;
-import hyundai.movie.domains.crawler.dto.TmdbCastDto;
-import hyundai.movie.domains.crawler.dto.TmdbCrewDto;
-import hyundai.movie.domains.crawler.dto.TmdbGenreDto;
-import hyundai.movie.domains.crawler.dto.TmdbMovieDto;
+import hyundai.movie.domains.external.client.TmdbApiClient;
+import hyundai.movie.domains.external.dto.TmdbCastDto;
+import hyundai.movie.domains.external.dto.TmdbCrewDto;
+import hyundai.movie.domains.external.dto.TmdbGenreDto;
+import hyundai.movie.domains.external.dto.TmdbMovieDto;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -162,9 +162,10 @@ public class InitialDataCollector {
         List<String> statements = new ArrayList<>();
         for (TmdbGenreDto genre : genres) {
             statements.add(String.format("""
-               INSERT IGNORE INTO genre (name, created_at, updated_at)
-               VALUES ('%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+               INSERT IGNORE INTO genre (tmdb_id, name, created_at, updated_at)
+               VALUES (%d, '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
                """,
+                    genre.getId(),
                     escapeSql(genre.getName())
             ));
         }
@@ -187,13 +188,13 @@ public class InitialDataCollector {
 
         // status 커스텀 로직
         String customStatus;
-        if (nowPlayingMovieIds.contains(movie.getId())) {
+        if (releaseDate != null && releaseDate.isAfter(LocalDate.now())) {
+            customStatus = "UPCOMING";
+        } else if (nowPlayingMovieIds.contains(movie.getId())) {
             customStatus = "NOW_PLAYING";
         } else if (movie.getStatus().equals("Released") &&
                 releaseDate != null && releaseDate.isBefore(LocalDate.now())) {
             customStatus = "RELEASED";
-        } else if (releaseDate != null && releaseDate.isAfter(LocalDate.now())) {
-            customStatus = "UPCOMING";
         } else {
             customStatus = "UNKNOWN";
         }
@@ -236,10 +237,11 @@ public class InitialDataCollector {
                 .limit(5)
                 .toList()) {
             statements.add(String.format("""
-               INSERT IGNORE INTO actor (name, profile, created_at, updated_at)
+               INSERT IGNORE INTO actor (tmdb_id, name, profile, created_at, updated_at)
                SELECT '%s', '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
                WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '%s');
                """,
+                    cast.getId(),
                     escapeSql(cast.getName()),
                     escapeSql(cast.getProfilePath()),
                     escapeSql(cast.getName())
@@ -260,10 +262,11 @@ public class InitialDataCollector {
         // MovieDirector INSERT
         for (TmdbCrewDto crew : movie.getCredits().getDirectors()) {
             statements.add(String.format("""
-               INSERT IGNORE INTO director (name, profile, created_at, updated_at)
-               SELECT '%s', '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+               INSERT IGNORE INTO director (tmdb_id, name, profile, created_at, updated_at)
+               SELECT %d, '%s', '%s', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
                WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '%s');
                """,
+                    crew.getId(),
                     escapeSql(crew.getName()),
                     escapeSql(crew.getProfilePath()),
                     escapeSql(crew.getName())

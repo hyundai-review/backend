@@ -1,6 +1,6 @@
-package hyundai.movie.domains.crawler.client;
+package hyundai.movie.domains.external.client;
 
-import hyundai.movie.domains.crawler.dto.KobisBoxOfficeDto;
+import hyundai.movie.domains.external.dto.KobisBoxOfficeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

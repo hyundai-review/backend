@@ -1,4 +1,4 @@
-package hyundai.movie.domains.crawler.dto;
+package hyundai.movie.domains.external.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;

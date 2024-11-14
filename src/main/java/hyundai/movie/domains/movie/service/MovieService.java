@@ -37,18 +37,18 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public BoxOfficeListResponse getBoxOfficeMovieList() {
-        // 1. BoxOffice Entity를 뒤져, 오늘 날짜 박스오피스가 있는지 확인
-
-        // 2. 만약 있다면, 해당 정보를 리턴
-
-        // 3. 만약 없다면, KobisApiClient를 사용해 박스오피스 순위를 찾음
-
-        // 4. 해당 정보를 바탕으로 Tmdb를 검색하고, DB를 채움(save)
-
-        // 5. BoxOffice 역시 데이터를 채우고,
-
-        // 6. 데이터를 리턴한다.
-    }
+//    @Transactional
+//    public BoxOfficeListResponse getBoxOfficeMovieList() {
+//        // 1. BoxOffice Entity를 뒤져, 오늘 날짜 박스오피스가 있는지 확인
+//
+//        // 2. 만약 있다면, 해당 정보를 리턴
+//
+//        // 3. 만약 없다면, KobisApiClient를 사용해 박스오피스 순위를 찾음
+//
+//        // 4. 해당 정보를 바탕으로 Tmdb를 검색하고, DB를 채움(save)
+//
+//        // 5. BoxOffice 역시 데이터를 채우고,
+//
+//        // 6. 데이터를 리턴한다.
+//    }
 }

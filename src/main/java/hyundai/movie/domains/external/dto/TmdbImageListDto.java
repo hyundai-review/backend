@@ -1,4 +1,4 @@
-package hyundai.movie.domains.crawler.dto;
+package hyundai.movie.domains.external.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class TmdbImageListDto {
+    private Long id;
     private List<TmdbImageDto> posters;
     private List<TmdbImageDto> backdrops;
 }
