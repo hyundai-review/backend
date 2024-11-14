@@ -11,5 +11,5 @@ public class TmdbCountryReleaseDateDto {
     @JsonProperty("iso_3166_1")
     private String iso31661;
     @JsonProperty("release_dates")
-    private List<ReleaseDateItemDto> releaseDates;
+    private List<TmdbReleaseDateItemDto> releaseDates;
 }

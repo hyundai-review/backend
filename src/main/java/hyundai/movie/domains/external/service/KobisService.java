@@ -21,7 +21,7 @@ public class KobisService {
 
     private final KobisApiClient kobisApiClient;
     private final BoxOfficeRepository boxOfficeRepository;
-    private final MovieInitializationService movieInitializationService;
+    private final MovieFetchService movieFetchService;
 
     @Scheduled(cron = "0 0 10 * * ?")
     @Transactional
@@ -56,7 +56,7 @@ public class KobisService {
             // 가져온 데이터로 Movie/BoxOffice 생성
             kobisBoxOfficeDto.getBoxOfficeResult().getDailyBoxOfficeList()
                     .forEach(dailyBoxOffice -> {
-                                Movie movie = movieInitializationService.initializeMovieByName(
+                                Movie movie = movieFetchService.initializeMovieByName(
                                         dailyBoxOffice.getMovieNm().replaceAll("[^a-zA-Z가-힣0-9\\s]", ""),
                                         dailyBoxOffice.getOpenDt().substring(0, 4)
                                 );

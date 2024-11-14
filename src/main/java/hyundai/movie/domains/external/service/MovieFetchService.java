@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MovieInitializationService {
+public class MovieFetchService {
 
     private final TmdbApiClient tmdbApiClient;
     private final MovieRepository movieRepository;
@@ -129,7 +129,7 @@ public class MovieInitializationService {
         });
 
         // 3. 배우 연결
-        tmdbMovie.getCredits().getCast().forEach(castDto -> {
+        tmdbMovie.getCredits().getCast().stream().limit(5).forEach(castDto -> {
             Actor actor = actorRepository.findByTmdbId(castDto.getId())
                     .orElseGet(() -> createActor(castDto));
 
@@ -156,9 +156,9 @@ public class MovieInitializationService {
                 });
 
         // 5. 이미지 연결
-        TmdbImageListDto imageList = tmdbApiClient.getMovieImages(tmdbMovie.getId());
+        TmdbImageListDto posterList = tmdbApiClient.getMovieImages(tmdbMovie.getId(), "ko, en, null");
 
-        imageList.getPosters().forEach(imageDto -> {
+        posterList.getPosters().forEach(imageDto -> {
             MovieImage movieImage = MovieImage.builder()
                     .movie(movie)
                     .height(imageDto.getHeight())
@@ -169,7 +169,9 @@ public class MovieInitializationService {
             movie.getImages().add(movieImage);
         });
 
-        imageList.getBackdrops().forEach(imageDto -> {
+        TmdbImageListDto backdropList = tmdbApiClient.getMovieImages(tmdbMovie.getId(), "null");
+
+        backdropList.getBackdrops().forEach(imageDto -> {
             MovieImage movieImage = MovieImage.builder()
                     .movie(movie)
                     .height(imageDto.getHeight())
@@ -195,6 +197,7 @@ public class MovieInitializationService {
 
     private Actor createActor(TmdbCastDto dto) {
         Actor actor = Actor.builder()
+                .tmdbId(dto.getId())
                 .profile(dto.getProfilePath())
                 .name(dto.getName())
                 .build();
@@ -204,6 +207,7 @@ public class MovieInitializationService {
 
     private Director createDirector(TmdbCrewDto dto) {
         Director director = Director.builder()
+                .tmdbId(dto.getId())
                 .profile(dto.getProfilePath())
                 .name(dto.getName())
                 .build();
