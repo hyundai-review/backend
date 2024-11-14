@@ -1,12 +1,16 @@
 package hyundai.movie.domains.movie.service;
 
+import hyundai.movie.domains.movie.api.response.BoxOfficeListResponse;
 import hyundai.movie.domains.movie.api.response.MovieResponse;
+import hyundai.movie.domains.movie.domain.BoxOffice;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.BoxOfficeRepository;
 import hyundai.movie.domains.movie.repository.GenreRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -36,18 +40,21 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public BoxOfficeListResponse getBoxOfficeMovieList() {
-//        // 1. BoxOffice Entity를 뒤져, 오늘 날짜 박스오피스가 있는지 확인
-//
-//        // 2. 만약 있다면, 해당 정보를 리턴
-//
-//        // 3. 만약 없다면, KobisApiClient를 사용해 박스오피스 순위를 찾음
-//
-//        // 4. 해당 정보를 바탕으로 Tmdb를 검색하고, DB를 채움(save)
-//
-//        // 5. BoxOffice 역시 데이터를 채우고,
-//
-//        // 6. 데이터를 리턴한다.
-//    }
+    @Transactional
+    public BoxOfficeListResponse getBoxOfficeMovieList() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String date;
+        if (now.getHour() >= 9) {
+            date = now.minusDays(1).format(formatter);
+        } else {
+            date = now.minusDays(2).format(formatter);
+        }
+
+        String requestDate = date.replace("-", "");
+        List<BoxOffice> boxOfficeList = boxOfficeRepository.findByDateWithMovie(requestDate);
+
+        return BoxOfficeListResponse.of(boxOfficeList, date);
+    }
 }
