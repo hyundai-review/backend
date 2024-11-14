@@ -1,6 +1,7 @@
 package hyundai.movie.domains.movie.domain;
 
 import hyundai.movie.global.common.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class BoxOffice extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Movie movie;
 
+    @Column(name = "movie_rank")
     private Integer rank;
 
     private String targetDate;
