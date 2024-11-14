@@ -24,8 +24,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Member loginOrRegister(KakaoMemberResponseDto kakaoMemberInfo) {
-//        return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
-//                .orElseGet(() -> registerMember(kakaoMemberInfo));
         // providerId로 기존 회원을 찾음
         // providerId로 기존 회원 조회
         return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
@@ -40,17 +38,13 @@ public class MemberService {
                 .orElseGet(() -> registerNewMember(kakaoMemberInfo)); // 회원이 없으면 신규 회원 가입
     }
 
-    /**
-     * 회원 재활성화 메서드
-     */
+    // 회원 재가입
     private void reactivateMember(Member member) {
         member.reactivate(); // isActive를 true로 변경
         memberRepository.save(member); // 업데이트 저장
     }
 
-    /**
-     * 신규 회원 가입 메서드
-     */
+    // 회원가입
     private Member registerNewMember(KakaoMemberResponseDto kakaoMemberInfo) {
         Member newMember = Member.builder()
                 .nickname(generateRandomNickname())
