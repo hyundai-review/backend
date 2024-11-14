@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-class ReleaseDateItemDto {
+class TmdbReleaseDateItemDto {
     private String certification;
 }
