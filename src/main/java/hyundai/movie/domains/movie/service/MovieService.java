@@ -1,6 +1,5 @@
 package hyundai.movie.domains.movie.service;
 
-import hyundai.movie.domains.movie.api.response.BoxOfficeListResponse;
 import hyundai.movie.domains.movie.api.response.MovieResponse;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;

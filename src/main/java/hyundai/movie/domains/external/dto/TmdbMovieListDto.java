@@ -3,7 +3,6 @@ package hyundai.movie.domains.external.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class TmdbMovieListDto {
