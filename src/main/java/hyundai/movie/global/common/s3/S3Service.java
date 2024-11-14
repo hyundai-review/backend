@@ -1,4 +1,4 @@
-package hyundai.movie.domains.member.service;
+package hyundai.movie.global.common.s3;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,7 +27,7 @@ public class S3Service {
         this.s3Client = s3Client;
     }
 
-    public String uploadProfileImage(MultipartFile file, String nickname) throws IOException {
+    public String uploadImage(MultipartFile file, String nickname) throws IOException {
         // 사용자별 디렉토리와 파일명을 사용하여 S3 키 생성
         String key = Paths.get("profile-images", nickname, file.getOriginalFilename()).toString();
 
