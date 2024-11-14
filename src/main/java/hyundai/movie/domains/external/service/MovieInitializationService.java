@@ -18,6 +18,7 @@ import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.ActorRepository;
 import hyundai.movie.domains.movie.repository.DirectorRepository;
 import hyundai.movie.domains.movie.repository.GenreRepository;
+import hyundai.movie.domains.movie.repository.MovieImageRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -41,6 +42,7 @@ public class MovieInitializationService {
     private final ActorRepository actorRepository;
     private final DirectorRepository directorRepository;
     private final GenreRepository genreRepository;
+    private final MovieImageRepository movieImageRepository;
     private Set<Long> nowPlayingMovieIds = new HashSet<>();
 
     public Movie initializeMovieById(Long tmdbId) {
@@ -156,9 +158,9 @@ public class MovieInitializationService {
                 });
 
         // 5. 이미지 연결
-        TmdbImageListDto imageList = tmdbApiClient.getMovieImages(tmdbMovie.getId());
+        TmdbImageListDto posterList = tmdbApiClient.getMovieImages(tmdbMovie.getId(), "ko, en, null");
 
-        imageList.getPosters().forEach(imageDto -> {
+        posterList.getPosters().forEach(imageDto -> {
             MovieImage movieImage = MovieImage.builder()
                     .movie(movie)
                     .height(imageDto.getHeight())
@@ -166,10 +168,13 @@ public class MovieInitializationService {
                     .filePath(imageDto.getFilePath())
                     .isPoster(true)
                     .build();
+            movieImageRepository.save(movieImage);
             movie.getImages().add(movieImage);
         });
 
-        imageList.getBackdrops().forEach(imageDto -> {
+        TmdbImageListDto backdropList = tmdbApiClient.getMovieImages(tmdbMovie.getId(), "null");
+
+        backdropList.getBackdrops().forEach(imageDto -> {
             MovieImage movieImage = MovieImage.builder()
                     .movie(movie)
                     .height(imageDto.getHeight())
@@ -177,6 +182,7 @@ public class MovieInitializationService {
                     .filePath(imageDto.getFilePath())
                     .isPoster(false)  // backdrop
                     .build();
+            movieImageRepository.save(movieImage);
             movie.getImages().add(movieImage);
         });
 
