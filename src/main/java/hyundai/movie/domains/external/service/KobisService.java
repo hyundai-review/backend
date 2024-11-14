@@ -7,6 +7,7 @@ import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.repository.BoxOfficeRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +39,16 @@ public class KobisService {
     @Transactional
     public boolean fetchBoxOfficeMovieList() {
         try {
-            LocalDate yesterday = LocalDate.now().minusDays(1);
+            LocalDateTime now = LocalDateTime.now();
             // kobis는 yyyymmdd 형식
-            String formattedDate = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+            String formattedDate;
+            if (now.getHour() >= 9) {
+                formattedDate = now.minusDays(1).format(formatter);
+            } else {
+                formattedDate = now.minusDays(2).format(formatter);
+            }
 
             // DB에 이미 데이터가 있다면 요청 무시
             List<BoxOffice> boxOfficeList = boxOfficeRepository.findByDateWithMovie(formattedDate);
@@ -56,7 +64,7 @@ public class KobisService {
             // 가져온 데이터로 Movie/BoxOffice 생성
             kobisBoxOfficeDto.getBoxOfficeResult().getDailyBoxOfficeList()
                     .forEach(dailyBoxOffice -> {
-                                Movie movie = movieFetchService.initializeMovieByName(
+                                Movie movie = movieFetchService.fetchMovieByName(
                                         dailyBoxOffice.getMovieNm().replaceAll("[^a-zA-Z가-힣0-9\\s]", ""),
                                         dailyBoxOffice.getOpenDt().substring(0, 4)
                                 );

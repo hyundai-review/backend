@@ -43,18 +43,27 @@ public class MovieFetchService {
     private final GenreRepository genreRepository;
     private Set<Long> nowPlayingMovieIds = new HashSet<>();
 
-    public Movie initializeMovieById(Long tmdbId) {
+    public Movie fetchMovieById(Long tmdbId) {
         return movieRepository.findByTmdbId(tmdbId)
                 .orElseGet(() -> {
                     TmdbMovieDto tmdbMovie = tmdbApiClient.getMovie(tmdbId);
-                    return initializeMovie(tmdbMovie);
+                    return fetchMovie(tmdbMovie);
                 });
     }
 
-    public Movie initializeMovieByName(String query, String releaseYear) {
-        List<TmdbMovieDto> movies = tmdbApiClient.searchMovie(query, releaseYear);
+    public Movie fetchMovieByName(String query, String releaseYear) {
+        List<TmdbMovieDto> movies;
+        String queryTmp = query;
+
+        do {
+            movies = tmdbApiClient.searchMovie(queryTmp, releaseYear);
+
+            if (!movies.isEmpty() || queryTmp.length() <= 1) break;
+            queryTmp = queryTmp.substring(0, queryTmp.length() - 1);
+        } while(true);
+
         if (movies.isEmpty()) {
-            log.warn("No movie found for title: {} and year: {}", query, releaseYear);
+            log.warn("Movie not found - title: {}, year: {}", query, releaseYear);
             throw new MovieNotFoundException("영화를 찾을 수 없습니다: " + query);
         }
 
@@ -62,18 +71,18 @@ public class MovieFetchService {
                 .filter(m -> m.getTitle().equals(query) &&
                         m.getReleaseDate().startsWith(releaseYear))
                 .findFirst()
-                .orElseGet(() -> movies.get(0));
+                .orElse(movies.get(0));
 
         TmdbMovieDto detailedMovie = tmdbApiClient.getMovie(searchedMovie.getId());
 
         return movieRepository.findByTmdbId(detailedMovie.getId())
                 .orElseGet(() -> {
                     log.info("Initializing new movie: {} ({})", query, releaseYear);
-                    return initializeMovie(detailedMovie);
+                    return fetchMovie(detailedMovie);
                 });
     }
 
-    private Movie initializeMovie(TmdbMovieDto tmdbMovie) {
+    private Movie fetchMovie(TmdbMovieDto tmdbMovie) {
         collectNowPlayingMovies();
 
         // 날짜 변환 및 비교 로직
