@@ -7,6 +7,7 @@ import hyundai.movie.domains.member.dto.KakaoMemberResponseDto;
 import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.member.repository.MemberRepository;
 import hyundai.movie.global.annotation.CheckActiveUser;
+import hyundai.movie.global.common.s3.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -110,7 +111,7 @@ public class MemberService {
 
         try {
             // S3에 이미지 업로드
-            String imageUrl = s3Service.uploadProfileImage(file, member.getNickname());
+            String imageUrl = s3Service.uploadImage(file, member.getNickname());
             member.updateProfile(imageUrl); // Member의 프로필 URL 업데이트
             memberRepository.save(member);
             log.info("MEMBER ID : {}의 프로필 이미지가 업데이트되었습니다.", memberId);
