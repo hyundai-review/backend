@@ -8,6 +8,7 @@ import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.member.repository.MemberRepository;
 import hyundai.movie.global.annotation.CheckActiveUser;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     public Member loginOrRegister(KakaoMemberResponseDto kakaoMemberInfo) {
         // providerId로 기존 회원을 찾음
@@ -44,7 +47,7 @@ public class MemberService {
         memberRepository.save(member); // 업데이트 저장
     }
 
-    // 회원가입
+    // 신규 회원가입
     private Member registerNewMember(KakaoMemberResponseDto kakaoMemberInfo) {
         Member newMember = Member.builder()
                 .nickname(generateRandomNickname())
@@ -95,6 +98,26 @@ public class MemberService {
                 .memberId(member.getId())
                 .nickname(member.getNickname())
                 .build();
+    }
+
+    @CheckActiveUser
+    public String updateProfileImage(MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        try {
+            // S3에 이미지 업로드
+            String imageUrl = s3Service.uploadProfileImage(file, member.getNickname());
+            member.updateProfile(imageUrl); // Member의 프로필 URL 업데이트
+            memberRepository.save(member);
+            log.info("MEMBER ID : {}의 프로필 이미지가 업데이트되었습니다.", memberId);
+            return imageUrl;
+        } catch (IOException e) {
+            throw new RuntimeException("프로필 이미지 업로드 중 오류가 발생했습니다.", e);
+        }
     }
 
     public void deactivateMember() {

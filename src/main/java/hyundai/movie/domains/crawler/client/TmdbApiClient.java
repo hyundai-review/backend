@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 public class TmdbApiClient {
-
     private final WebClient webClient;
 
     @Value("${tmdb.api.key}")
@@ -31,6 +30,22 @@ public class TmdbApiClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/popular")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("page", page)
+                        .queryParam("language", "ko-KR")
+                        .queryParam("region", "KR")
+                        .queryParam("include_adult", "false")
+                        .build())
+                .retrieve()
+                .bodyToMono(TmdbMovieListDto.class)
+                .map(TmdbMovieListDto::getResults)
+                .block();
+    }
+
+    public List<TmdbMovieDto> getTopRatedMovies(int page) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/top_rated")
                         .queryParam("api_key", apiKey)
                         .queryParam("page", page)
                         .queryParam("language", "ko-KR")
