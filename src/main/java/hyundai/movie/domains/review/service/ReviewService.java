@@ -8,19 +8,30 @@ import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
+import hyundai.movie.domains.review.api.response.MyReviewResponse;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.ReviewListResponse;
+import hyundai.movie.domains.review.api.response.ReviewResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.domain.Review;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
+import hyundai.movie.domains.review.exception.InvalidPageRequestException;
 import hyundai.movie.domains.review.repository.ReviewRepository;
 import hyundai.movie.global.common.s3.S3Service;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -32,6 +43,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
+    // 텍스트 리뷰 작성
     public TextReviewCreateResponse createReview(Long movieId, TextReviewCreateRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = (Long) authentication.getPrincipal();
@@ -61,6 +73,8 @@ public class ReviewService {
 
         return TextReviewCreateResponse.from(savedReview);
     }
+
+    // 포토카드 리뷰 작성
     public PhotoReviewCreateResponse createPhotoReview(Long movieId, PhotoReviewCreateRequest request) {
         Member member = getAuthenticatedMember();
         Movie movie = getMovieById(movieId);
@@ -77,7 +91,7 @@ public class ReviewService {
                 .rating(request.getRating())
                 .content(request.getContent())
                 .isSpoil(request.getIsSpoil())
-                .photoCard(photoCardUrl)
+                .photocard(photoCardUrl)
                 .build();
 
         Review savedReview = reviewRepository.save(review);
@@ -106,6 +120,42 @@ public class ReviewService {
             throw new RuntimeException("포토카드 파일 업로드 중 오류가 발생했습니다.", e);
         }
     }
+
+    public ReviewListResponse getReviewsByMovie(Long movieId, PageRequest pageRequest) {
+        if (pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() <= 0) {
+            throw new InvalidPageRequestException("페이지 번호와 페이지 크기는 0 이상이어야 합니다.");
+        }
+        Movie movie = getMovieById(movieId);
+        Member member = getAuthenticatedMember();
+
+        // 내 리뷰 조회
+        Optional<Review> myReviewOpt = reviewRepository.findByMovieAndMember(movie, member);
+        MyReviewResponse myReview = myReviewOpt.map(MyReviewResponse::from).orElse(null);
+
+        // 전체 리뷰 조회
+       // Slice<Review> reviewSlice = reviewRepository.findByMovieId(movieId, PageRequest.of(pageRequest.getPageNumber() - 1, pageRequest.getPageSize()));
+
+        Slice<Review> reviewSlice = reviewRepository.findAllReviewsExceptMember(movie, member, pageRequest);
+        List<ReviewResponse> otherReviewList = reviewSlice.getContent().stream()
+                .map(review -> ReviewResponse.from(review, false))
+                .collect(Collectors.toList());
+
+        // 전체 리뷰 이용해서 totalPages 계산
+        int totalReviews = reviewRepository.countByMovie(movie); // 전체 리뷰 수
+        int totalPages = (int) Math.ceil((double) totalReviews / pageRequest.getPageSize());
+
+
+
+        return new ReviewListResponse(
+                myReview,
+              //  reviewSlice.getContent().stream().map(review -> ReviewResponse.from(review, false)).collect(Collectors.toList()),
+                otherReviewList,
+                reviewSlice,
+                totalPages
+        );
+    }
+
+
 
 
 

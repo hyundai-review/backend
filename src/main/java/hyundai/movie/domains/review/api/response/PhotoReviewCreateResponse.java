@@ -31,7 +31,7 @@ public class PhotoReviewCreateResponse {
                 photoReview.getRating(),
                 photoReview.getContent(),
                 photoReview.getIsSpoil(),
-                photoReview.getPhotoCard(),
+                photoReview.getPhotocard(),
                 photoReview.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 photoReview.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         );
