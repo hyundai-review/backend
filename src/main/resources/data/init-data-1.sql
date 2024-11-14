@@ -1,3 +1,6 @@
+INSERT INTO member (nickname, profile, provider_id, is_active, created_at, updated_at)
+VALUES ('아보카도파김치', 'profile', 'providerId', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 INSERT INTO genre (tmdb_id, name, created_at, updated_at)
 VALUES (28, '액션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 

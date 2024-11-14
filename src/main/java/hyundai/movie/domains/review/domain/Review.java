@@ -36,7 +36,7 @@ public class Review extends BaseTimeEntity {
     private Member member;
 
 
-    private String photoCard;
+    private String photocard;
     private String content;
     private Integer rating;
     private Boolean isSpoil;
@@ -44,10 +44,10 @@ public class Review extends BaseTimeEntity {
 
 
     @Builder
-    public Review(Movie movie, Member member, String photoCard, String content, Integer rating, Boolean isSpoil) {
+    public Review(Movie movie, Member member, String photocard, String content, Integer rating, Boolean isSpoil) {
         this.movie = movie;
         this.member = member;
-        this.photoCard = photoCard;
+        this.photocard = photocard;
         this.content = content;
         this.rating = rating;
         this.isSpoil = isSpoil;

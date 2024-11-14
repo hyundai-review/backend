@@ -3,11 +3,14 @@ package hyundai.movie.domains.review.api;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.ReviewListResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +48,18 @@ public class ReviewController {
 
         // 리뷰 생성 요청 처리
         PhotoReviewCreateResponse response = reviewService.createPhotoReview(movieId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    // 특정 영화의 전체 리뷰 조회
+    @GetMapping("/{movieId}")
+    public ResponseEntity<ReviewListResponse> getReviewsByMovie(
+            @PathVariable Long movieId,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false, defaultValue = "createdAt") String sort) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ReviewListResponse response = reviewService.getReviewsByMovie(movieId, pageRequest);
         return ResponseEntity.ok(response);
     }
 

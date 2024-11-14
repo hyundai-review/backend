@@ -1,7 +1,6 @@
 package hyundai.movie.domains.review.api.response;
 
 import hyundai.movie.domains.review.domain.Review;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -22,7 +21,6 @@ public class TextReviewCreateResponse {
         this.updatedAt = updatedAt;
     }
 
-    // 정적 팩토리 매서드
     public static TextReviewCreateResponse from(Review textReview) {
         return new TextReviewCreateResponse(
                 textReview.getId(),
