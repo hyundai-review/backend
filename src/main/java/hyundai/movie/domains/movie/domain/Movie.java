@@ -45,13 +45,13 @@ public class Movie extends BaseTimeEntity {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieGenre> movieGenres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieActor> movieActors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieDirector> movieDirectors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieImage> images = new ArrayList<>();
 
     @Builder

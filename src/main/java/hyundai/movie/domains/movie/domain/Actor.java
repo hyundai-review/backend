@@ -35,7 +35,8 @@ public class Actor extends BaseTimeEntity {
     private List<MovieActor> movieActors = new ArrayList<>();
 
     @Builder
-    public Actor(String profile, String name) {
+    public Actor(Long tmdbId, String profile, String name) {
+        this.tmdbId = tmdbId;
         this.profile = profile;
         this.name = name;
     }

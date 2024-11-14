@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "director")
 public class Director extends BaseTimeEntity {
     @Id
@@ -35,7 +35,8 @@ public class Director extends BaseTimeEntity {
     private List<MovieDirector> movieDirectors = new ArrayList<>();
 
     @Builder
-    public Director(String profile, String name) {
+    public Director(Long tmdbId, String profile, String name) {
+        this.tmdbId = tmdbId;
         this.profile = profile;
         this.name = name;
     }
