@@ -4,6 +4,7 @@ import hyundai.movie.domains.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,5 +17,10 @@ public class MovieController {
     @GetMapping("/boxoffice")
     public ResponseEntity<?> getBoxOfficeMovieList() {
         return ResponseEntity.ok(movieService.getBoxOfficeMovieList());
+    }
+
+    @GetMapping("/details/{movieId}")
+    public ResponseEntity<?> getMovieDetail(@PathVariable(name = "movieId") Long movieId) {
+        return ResponseEntity.ok(movieService.getMovieDetail(movieId));
     }
 }

@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,22 +22,22 @@ import org.springframework.stereotype.Service;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final BoxOfficeRepository boxOfficeRepository;
-    private final GenreRepository genreRepository;
 
 
     @Transactional
-    public MovieResponse getMovie(Long id) {
+    public MovieResponse getMovieDetail(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(MovieNotFoundException::new);
-        return new MovieResponse(movie);
+
+        return MovieResponse.from(movie);
     }
 
-    @Transactional
-    public List<MovieResponse> getMovies() {
-        return movieRepository.findAll().stream()
-                .map(MovieResponse::new)
-                .collect(Collectors.toList());
-    }
+//    @Transactional
+//    public List<MovieResponse> getMovies() {
+//        return movieRepository.findAll().stream()
+//                .map(MovieResponse::new)
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional
     public BoxOfficeListResponse getBoxOfficeMovieList() {

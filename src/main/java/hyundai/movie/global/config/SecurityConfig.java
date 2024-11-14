@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/h2-console/**", "/movies/boxoffice").permitAll()
+                        .requestMatchers("/auth/**", "/h2-console/**", "/movies/boxoffice", "movies/details/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
