@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface DirectorRepository extends JpaRepository<Director, Long> {
     Optional<Director> findByName(String name);
     boolean existsByName(String name);
+    Optional<Director> findByTmdbId(Long id);
 }

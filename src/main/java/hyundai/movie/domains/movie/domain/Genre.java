@@ -26,6 +26,9 @@ public class Genre extends BaseTimeEntity {
     private Long id;
 
     @Column(unique = true)
+    private Long tmdbId;
+
+    @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)

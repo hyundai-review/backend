@@ -1,6 +1,8 @@
 package hyundai.movie.global.error;
 
 import hyundai.movie.domains.member.exception.MemberNotFoundException;
+import hyundai.movie.domains.movie.exception.MovieNotFoundException;
+import hyundai.movie.domains.review.exception.DuplicateReviewException;
 import hyundai.movie.global.common.reponse.ErrorResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -98,6 +100,39 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         HttpStatus.NOT_FOUND.value(),
                         "회원 정보를 찾을 수 없습니다",
+                        errors));
+    }
+
+    @ExceptionHandler(MovieNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMovieNotFoundException(MovieNotFoundException ex) {
+        log.error("영화 정보를 찾을 수 없음", ex);
+
+        // 오류 메시지를 담을 Map 생성
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+
+        // ErrorResponse를 반환하여 클라이언트에게 예외 정보를 전달
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        "영화 정보를 찾을 수 없습니다",
+                        errors));
+    }
+
+
+    @ExceptionHandler(DuplicateReviewException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateReviewException(DuplicateReviewException ex) {
+        log.error("중복 리뷰 오류 발생", ex);
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        "중복 리뷰 오류",
                         errors));
     }
 }
