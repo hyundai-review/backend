@@ -27,8 +27,6 @@ public class MemberService {
     private final S3Service s3Service;
 
     public Member loginOrRegister(KakaoMemberResponseDto kakaoMemberInfo) {
-//        return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
-//                .orElseGet(() -> registerMember(kakaoMemberInfo));
         // providerId로 기존 회원을 찾음
         // providerId로 기존 회원 조회
         return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
