@@ -176,6 +176,25 @@ public class ReviewService {
         return ReviewUpdateResponse.from(review);
     }
 
+    // 리뷰 삭제
+    public void deleteReview(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("ID가 " + reviewId + "인 리뷰를 찾을 수 없습니다."));
+
+
+        if (!review.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("해당 리뷰를 삭제할 권한이 없습니다.");
+        }
+
+        reviewRepository.delete(review);
+    }
+
 
 
 
