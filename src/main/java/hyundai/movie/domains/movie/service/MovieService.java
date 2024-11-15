@@ -2,12 +2,15 @@ package hyundai.movie.domains.movie.service;
 
 import hyundai.movie.domains.external.service.MovieFetchService;
 import hyundai.movie.domains.movie.api.response.BoxOfficeListResponse;
+import hyundai.movie.domains.movie.api.response.MovieImageListResponse;
 import hyundai.movie.domains.movie.api.response.MovieItemResponse;
 import hyundai.movie.domains.movie.api.response.MovieResponse;
 import hyundai.movie.domains.movie.domain.BoxOffice;
 import hyundai.movie.domains.movie.domain.Movie;
+import hyundai.movie.domains.movie.domain.MovieImage;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.BoxOfficeRepository;
+import hyundai.movie.domains.movie.repository.MovieImageRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final BoxOfficeRepository boxOfficeRepository;
+    private final MovieImageRepository movieImageRepository;
     private final MovieFetchService movieFetchService;
 
 
@@ -71,5 +75,16 @@ public class MovieService {
         List<BoxOffice> boxOfficeList = boxOfficeRepository.findByDateWithMovie(requestDate);
 
         return BoxOfficeListResponse.of(boxOfficeList, date);
+    }
+
+    @Transactional
+    public MovieImageListResponse getMovieImageList(Long movieId) {
+        if(movieImageRepository.existsByMovieIdAndInvalid(movieId)) {
+            Movie movie = movieRepository.findById(movieId).orElseThrow(MovieNotFoundException::new);
+
+            movieFetchService.fetchMovieImage(movie);
+        }
+
+        return MovieImageListResponse.of(movieImageRepository.findByMovieId(movieId));
     }
 }

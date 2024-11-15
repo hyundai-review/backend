@@ -38,4 +38,9 @@ public class MovieController {
             @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(movieService.searchMovies(keyword, fetch, pageable));
     }
+
+    @GetMapping("/images/{movieId}")
+    public ResponseEntity<?> getMovieImageList(@PathVariable(name = "movieId") Long movieId) {
+        return ResponseEntity.ok(movieService.getMovieImageList(movieId));
+    }
 }

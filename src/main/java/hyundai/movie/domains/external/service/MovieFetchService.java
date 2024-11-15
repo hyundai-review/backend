@@ -225,6 +225,34 @@ public class MovieFetchService {
         return movieRepository.save(movie);
     }
 
+    @Transactional
+    public void fetchMovieImage(Movie movie) {
+
+        TmdbImageListDto posterList = tmdbApiClient.getMovieImages(movie.getTmdbId(), "ko, en, null");
+
+        movie.getImages().clear();
+
+        posterList.getPosters().forEach(imageDto -> {
+            movie.addImage(
+                    imageDto.getWidth(),
+                    imageDto.getHeight(),
+                    imageDto.getFilePath(),
+                    true
+            );
+        });
+
+        TmdbImageListDto backdropList = tmdbApiClient.getMovieImages(movie.getTmdbId(), "null");
+
+        backdropList.getBackdrops().forEach(imageDto -> {
+            movie.addImage(
+                    imageDto.getWidth(),
+                    imageDto.getHeight(),
+                    imageDto.getFilePath(),
+                    false
+            );
+        });
+    }
+
     private Genre createGenre(TmdbGenreDto dto) {
         return genreRepository.findByName(dto.getName())
                 .orElseGet(() -> {
