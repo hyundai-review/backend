@@ -202,4 +202,22 @@ public class ReviewService {
 
         return ReviewLikeResponse.from(savedReviewLike);
     }
+
+    @Transactional
+    public ReviewLikeResponse getReviewLike(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+
+        ReviewLike reviewLike = reviewLikeRepository.findReviewLikeByReviewIdAndMemberId(reviewId,
+                memberId).orElseGet(
+                () -> ReviewLike.builder().member(member).review(review).isLike(false).build());
+
+        return ReviewLikeResponse.from(reviewLike);
+    }
 }

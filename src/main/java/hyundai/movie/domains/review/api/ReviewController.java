@@ -84,5 +84,8 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.toggleReviewLike(reviewId));
     }
 
-
+    @GetMapping("/{reviewId}/like")
+    public ResponseEntity<?> getReviewLike(@PathVariable(name = "reviewId") Long reviewId) {
+        return ResponseEntity.ok(reviewService.getReviewLike(reviewId));
+    }
 }
