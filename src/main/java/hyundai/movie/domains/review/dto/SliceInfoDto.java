@@ -1,17 +1,17 @@
-package hyundai.movie.domains.review.api.response;
+package hyundai.movie.domains.review.dto;
 
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 @Getter
-public class SliceInfo {
+public class SliceInfoDto {
     private final boolean hasNext;
     private final int pageNumber;
     private final int pageSize;
     private final int numberOfElements;
     private final int totalPages;
 
-    public SliceInfo(Slice<?> slice, int totalPages) {
+    public SliceInfoDto(Slice<?> slice, int totalPages) {
         this.hasNext = slice.hasNext();
         this.pageNumber = slice.getNumber();
         this.pageSize = slice.getSize();

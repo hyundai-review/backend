@@ -4,6 +4,7 @@ import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
 import hyundai.movie.domains.review.exception.InvalidPageRequestException;
+import hyundai.movie.domains.review.exception.ReviewNotFoundException;
 import hyundai.movie.global.common.reponse.ErrorResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -141,6 +142,23 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "서버 오류 발생",
+                        errors));
+    }
+
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleReviewNotFoundException(ReviewNotFoundException ex) {
+        log.error("리뷰 정보를 찾을 수 없음", ex);
+
+        // 오류 메시지를 담을 Map 생성
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+
+        // ErrorResponse를 반환하여 클라이언트에게 예외 정보를 전달
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        "리뷰 정보를 찾을 수 없습니다",
                         errors));
     }
 

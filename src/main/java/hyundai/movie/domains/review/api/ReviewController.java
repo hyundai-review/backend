@@ -1,18 +1,22 @@
 package hyundai.movie.domains.review.api;
 
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
+import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
+import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +65,22 @@ public class ReviewController {
         PageRequest pageRequest = PageRequest.of(page, size);
         ReviewListResponse response = reviewService.getReviewsByMovie(movieId, pageRequest);
         return ResponseEntity.ok(response);
+    }
+
+    // 리뷰 수정
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<ReviewUpdateResponse> updateReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewUpdateRequest request) {
+        ReviewUpdateResponse response = reviewService.updateReview(reviewId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok().build();
     }
 
 

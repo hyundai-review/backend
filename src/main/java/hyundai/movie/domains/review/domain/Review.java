@@ -52,4 +52,11 @@ public class Review extends BaseTimeEntity {
         this.rating = rating;
         this.isSpoil = isSpoil;
     }
+
+    // 리뷰 수정 메서드
+    public void updateContent(Integer rating, String content, Boolean isSpoil) {
+        this.rating = rating;
+        this.content = content;
+        this.isSpoil = isSpoil;
+    }
 }

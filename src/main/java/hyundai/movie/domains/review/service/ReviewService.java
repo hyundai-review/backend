@@ -7,20 +7,22 @@ import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
+import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
-import hyundai.movie.domains.review.api.response.MyReviewResponse;
+import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
+import hyundai.movie.domains.review.dto.MyReviewDto;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
-import hyundai.movie.domains.review.api.response.ReviewResponse;
+import hyundai.movie.domains.review.dto.ReviewDto;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.domain.Review;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
 import hyundai.movie.domains.review.exception.InvalidPageRequestException;
+import hyundai.movie.domains.review.exception.ReviewNotFoundException;
 import hyundai.movie.domains.review.repository.ReviewRepository;
 import hyundai.movie.global.common.s3.S3Service;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +33,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -65,7 +66,7 @@ public class ReviewService {
                 .movie(movie)
                 .member(member)
                 .rating(request.getRating())
-                .content(request.getReview())
+                .content(request.getContent())
                 .isSpoil(request.getIsSpoil())
                 .build();
 
@@ -130,14 +131,14 @@ public class ReviewService {
 
         // 내 리뷰 조회
         Optional<Review> myReviewOpt = reviewRepository.findByMovieAndMember(movie, member);
-        MyReviewResponse myReview = myReviewOpt.map(MyReviewResponse::from).orElse(null);
+        MyReviewDto myReview = myReviewOpt.map(MyReviewDto::from).orElse(null);
 
         // 전체 리뷰 조회
        // Slice<Review> reviewSlice = reviewRepository.findByMovieId(movieId, PageRequest.of(pageRequest.getPageNumber() - 1, pageRequest.getPageSize()));
 
         Slice<Review> reviewSlice = reviewRepository.findAllReviewsExceptMember(movie, member, pageRequest);
-        List<ReviewResponse> otherReviewList = reviewSlice.getContent().stream()
-                .map(review -> ReviewResponse.from(review, false))
+        List<ReviewDto> otherReviewList = reviewSlice.getContent().stream()
+                .map(review -> ReviewDto.from(review, false))
                 .collect(Collectors.toList());
 
         // 전체 리뷰 이용해서 totalPages 계산
@@ -153,6 +154,45 @@ public class ReviewService {
                 reviewSlice,
                 totalPages
         );
+    }
+
+     // 리뷰 수정
+    @Transactional
+    public ReviewUpdateResponse updateReview(Long reviewId, ReviewUpdateRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        // 작성자 검증을 위해 현재 로그인한 사용자를 찾음
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
+
+        // 리뷰가 존재하는지 확인하고 작성자가 맞는지 검증
+        Review review = reviewRepository.findById(reviewId)
+                .filter(r -> r.getMember().getId().equals(memberId))
+                .orElseThrow(() -> new ReviewNotFoundException("ID가 " + reviewId + "인 리뷰를 찾을 수 없습니다."));
+
+        // 리뷰 업데이트
+        review.updateContent(request.getRating(), request.getContent(), request.getIsSpoil());
+        return ReviewUpdateResponse.from(review);
+    }
+
+    // 리뷰 삭제
+    public void deleteReview(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("ID가 " + reviewId + "인 리뷰를 찾을 수 없습니다."));
+
+
+        if (!review.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("해당 리뷰를 삭제할 권한이 없습니다.");
+        }
+
+        reviewRepository.delete(review);
     }
 
 
