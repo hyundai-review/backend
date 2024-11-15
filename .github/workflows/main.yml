@@ -57,6 +57,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # 기존 이미지 삭제
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest || true
+
             # 최신 이미지 pull
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest
             
