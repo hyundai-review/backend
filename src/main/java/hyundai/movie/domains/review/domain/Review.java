@@ -1,8 +1,10 @@
 package hyundai.movie.domains.review.domain;
 
+import hyundai.movie.domains.comment.domain.Comment;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.global.common.BaseTimeEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,8 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +38,9 @@ public class Review extends BaseTimeEntity {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments;
 
 
     private String photocard;
