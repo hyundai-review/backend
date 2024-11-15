@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -40,19 +42,28 @@ public class MovieService {
         return MovieResponse.from(movie);
     }
 
-//    @Transactional
-//    public List<MovieResponse> getMovies() {
-//        return movieRepository.findAll().stream()
-//                .map(MovieResponse::new)
-//                .collect(Collectors.toList());
-//    }
+    @Transactional
+    public Slice<MovieItemResponse> getRecommendMovieList(Long genreId, Pageable pageable) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Long memberId = (Long) authentication.getPrincipal();
+
+        // DB에 있는거 끌어오기 + TMDB에서 일부 가져오기... -> 이거 어짜피 추천 알고리즘 구현 때 recommendMovie 테이블 생김
+        // 그 때 가져와도 됨
+
+        if(genreId == 0) {
+            return movieRepository.findRandomMovies(pageable)
+                    .map(MovieItemResponse::from);
+        } else {
+            return movieRepository.findRandomMoviesByGenre(genreId, pageable)
+                    .map(MovieItemResponse::from);
+        }
+    }
 
     @Transactional
     public Slice<MovieItemResponse> searchMovies(String keyword, Boolean fetch, Pageable pageable) {
 
         if(fetch) {
             List<Movie> movieList = movieFetchService.fetchAllMoviesByName(keyword, "");
-            log.info("######## 영화 수 : " + movieList.size());
         }
 
         return movieRepository.searchByTitleContaining(keyword, pageable)

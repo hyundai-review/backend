@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,12 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
         this.member = member;
         this.review = review;
+    }
+
+    // 답글 수정 메서드
+    public void updateContent(String content) {
+        this.content = content;
+
     }
 
 
