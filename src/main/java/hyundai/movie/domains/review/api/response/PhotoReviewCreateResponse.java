@@ -12,16 +12,16 @@ public class PhotoReviewCreateResponse {
     private Boolean isSpoil;
     private String photocard;
     private String createdAt;
-    private String updatedAt;
 
-    private PhotoReviewCreateResponse(Long reviewId, Integer rating, String content, Boolean isSpoil, String photocard, String createdAt, String updatedAt) {
+
+    private PhotoReviewCreateResponse(Long reviewId, Integer rating, String content, Boolean isSpoil, String photocard, String createdAt) {
         this.reviewId = reviewId;
         this.rating = rating;
         this.content = content;
         this.isSpoil = isSpoil;
         this.photocard = photocard;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
 
     // 정적 팩토리 메서드
@@ -31,9 +31,8 @@ public class PhotoReviewCreateResponse {
                 photoReview.getRating(),
                 photoReview.getContent(),
                 photoReview.getIsSpoil(),
-                photoReview.getPhotoCard(),
-                photoReview.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                photoReview.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                photoReview.getPhotocard(),
+                photoReview.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         );
     }
 

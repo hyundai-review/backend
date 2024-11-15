@@ -2,6 +2,8 @@ package hyundai.movie.domains.movie.api;
 
 import hyundai.movie.domains.movie.api.response.MovieItemResponse;
 import hyundai.movie.domains.movie.service.MovieService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,8 +33,14 @@ public class MovieController {
 
     @GetMapping("/search")
     public ResponseEntity<Slice<MovieItemResponse>> searchMovies(
-            @RequestParam String keyword,
+            @Valid @NotBlank @RequestParam String keyword,
+            @RequestParam(required = false, defaultValue = "false") Boolean fetch,
             @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(movieService.searchMovies(keyword, pageable));
+        return ResponseEntity.ok(movieService.searchMovies(keyword, fetch, pageable));
+    }
+
+    @GetMapping("/images/{movieId}")
+    public ResponseEntity<?> getMovieImageList(@PathVariable(name = "movieId") Long movieId) {
+        return ResponseEntity.ok(movieService.getMovieImageList(movieId));
     }
 }
