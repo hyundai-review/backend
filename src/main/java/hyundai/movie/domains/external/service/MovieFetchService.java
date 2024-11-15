@@ -44,6 +44,8 @@ public class MovieFetchService {
     private Set<Long> nowPlayingMovieIds = new HashSet<>();
 
     public Movie fetchMovieById(Long tmdbId) {
+        collectNowPlayingMovies();
+
         return movieRepository.findByTmdbId(tmdbId)
                 .orElseGet(() -> {
                     TmdbMovieDto tmdbMovie = tmdbApiClient.getMovie(tmdbId);
@@ -52,6 +54,8 @@ public class MovieFetchService {
     }
 
     public Movie fetchMovieByName(String query, String releaseYear) {
+        collectNowPlayingMovies();
+
         List<TmdbMovieDto> movies;
         String queryTmp = query;
 
@@ -82,8 +86,35 @@ public class MovieFetchService {
                 });
     }
 
-    private Movie fetchMovie(TmdbMovieDto tmdbMovie) {
+    public List<Movie> fetchAllMoviesByName(String query, String releaseYear) {
         collectNowPlayingMovies();
+
+        List<TmdbMovieDto> movies = tmdbApiClient.searchMovie(query, releaseYear);
+
+        if (movies.isEmpty()) {
+            log.warn("No movies found - title: {}, year: {}", query, releaseYear);
+            return List.of();
+        }
+
+        log.info("Found {} movies for query: {} ({})", movies.size(), query, releaseYear);
+
+        return movies.stream()
+                .map(movieDto -> {
+                    // 이미 DB에 있는 영화는 건너뛰기
+                    return movieRepository.findByTmdbId(movieDto.getId())
+                            .orElseGet(() -> {
+                                // 상세 정보 가져오기
+                                TmdbMovieDto detailedMovie = tmdbApiClient.getMovie(movieDto.getId());
+                                log.info("Fetching detailed info for movie: {} ({})",
+                                        detailedMovie.getTitle(),
+                                        detailedMovie.getReleaseDate());
+                                return fetchMovie(detailedMovie);
+                            });
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Movie fetchMovie(TmdbMovieDto tmdbMovie) {
 
         // 날짜 변환 및 비교 로직
         LocalDate releaseDate = null;

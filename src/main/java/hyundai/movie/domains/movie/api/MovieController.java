@@ -32,7 +32,8 @@ public class MovieController {
     @GetMapping("/search")
     public ResponseEntity<Slice<MovieItemResponse>> searchMovies(
             @RequestParam String keyword,
+            @RequestParam(required = false, defaultValue = "false") Boolean fetch,
             @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(movieService.searchMovies(keyword, pageable));
+        return ResponseEntity.ok(movieService.searchMovies(keyword, fetch, pageable));
     }
 }

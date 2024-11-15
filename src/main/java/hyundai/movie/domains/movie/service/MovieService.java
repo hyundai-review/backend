@@ -1,5 +1,6 @@
 package hyundai.movie.domains.movie.service;
 
+import hyundai.movie.domains.external.service.MovieFetchService;
 import hyundai.movie.domains.movie.api.response.BoxOfficeListResponse;
 import hyundai.movie.domains.movie.api.response.MovieItemResponse;
 import hyundai.movie.domains.movie.api.response.MovieResponse;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final BoxOfficeRepository boxOfficeRepository;
+    private final MovieFetchService movieFetchService;
 
 
     @Transactional
@@ -42,8 +44,12 @@ public class MovieService {
 //    }
 
     @Transactional
-    public Slice<MovieItemResponse> searchMovies(String keyword, Pageable pageable) {
-        // todo: tmdb에서 데이터 끌어와서 저장하기 isFetch??
+    public Slice<MovieItemResponse> searchMovies(String keyword, Boolean fetch, Pageable pageable) {
+
+        if(fetch) {
+            List<Movie> movieList = movieFetchService.fetchAllMoviesByName(keyword, "");
+            log.info("######## 영화 수 : " + movieList.size());
+        }
 
         return movieRepository.searchByTitleContaining(keyword, pageable)
                 .map(MovieItemResponse::from);
