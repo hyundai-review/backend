@@ -1,10 +1,10 @@
-package hyundai.movie.domains.review.api.response;
+package hyundai.movie.domains.review.dto;
 
 import hyundai.movie.domains.review.domain.Review;
 import lombok.Getter;
 
 @Getter
-public class MyReviewResponse {
+public class MyReviewDto {
     private final Long reviewId;
     private final Integer rating;
     private final String content;
@@ -13,7 +13,7 @@ public class MyReviewResponse {
     private final String createdAt;
     private final String updatedAt;
 
-    private MyReviewResponse(Long reviewId, Integer rating, String content, String photocard, String createdAt, String updatedAt) {
+    private MyReviewDto(Long reviewId, Integer rating, String content, String photocard, String createdAt, String updatedAt) {
         this.reviewId = reviewId;
         this.rating = rating;
         this.content = content;
@@ -22,9 +22,9 @@ public class MyReviewResponse {
         this.updatedAt = updatedAt;
     }
 
-    public static MyReviewResponse from(Review review) {
+    public static MyReviewDto from(Review review) {
 
-        return new MyReviewResponse(
+        return new MyReviewDto(
                 review.getId(),
                 review.getRating(),
                 review.getContent(),
