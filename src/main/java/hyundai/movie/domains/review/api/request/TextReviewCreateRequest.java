@@ -19,7 +19,7 @@ public class TextReviewCreateRequest {
     private Integer rating;
 
     @NotBlank(message = "리뷰 내용은 필수 항목입니다.")
-    private String review;
+    private String content;
     private Boolean isSpoil;
 
 }
