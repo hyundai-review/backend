@@ -42,16 +42,16 @@ public class Movie extends BaseTimeEntity {
     private Double voteAvg;
     private Long revenue;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieGenre> movieGenres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieActor> movieActors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieDirector> movieDirectors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieImage> images = new ArrayList<>();
 
     @Builder
@@ -69,5 +69,16 @@ public class Movie extends BaseTimeEntity {
         this.popularity = popularity;
         this.voteAvg = voteAvg;
         this.revenue = revenue;
+    }
+
+    public void addImage(Integer width, Integer height, String filePath, Boolean isPoster) {
+        MovieImage image = MovieImage.builder()
+                .movie(this)
+                .width(width)
+                .height(height)
+                .filePath(filePath)
+                .isPoster(isPoster)
+                .build();
+        this.images.add(image);
     }
 }

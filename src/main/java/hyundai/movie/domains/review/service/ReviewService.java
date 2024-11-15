@@ -10,16 +10,19 @@ import hyundai.movie.domains.movie.repository.MovieRepository;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
-import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
-import hyundai.movie.domains.review.dto.MyReviewDto;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.ReviewLikeResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
-import hyundai.movie.domains.review.dto.ReviewDto;
+import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.domain.Review;
+import hyundai.movie.domains.review.domain.ReviewLike;
+import hyundai.movie.domains.review.dto.MyReviewDto;
+import hyundai.movie.domains.review.dto.ReviewDto;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
 import hyundai.movie.domains.review.exception.InvalidPageRequestException;
 import hyundai.movie.domains.review.exception.ReviewNotFoundException;
+import hyundai.movie.domains.review.repository.ReviewLikeRepository;
 import hyundai.movie.domains.review.repository.ReviewRepository;
 import hyundai.movie.global.common.s3.S3Service;
 import jakarta.transaction.Transactional;
@@ -42,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
@@ -89,13 +93,8 @@ public class ReviewService {
 
         String photoCardUrl = uploadPhotoCard(request.getPhotocard(), member.getNickname());
 
-        Review review = Review.builder()
-                .movie(movie)
-                .member(member)
-                .rating(request.getRating())
-                .content(request.getContent())
-                .isSpoil(request.getIsSpoil())
-                .photocard(photoCardUrl)
+        Review review = Review.builder().movie(movie).member(member).rating(request.getRating())
+                .content(request.getContent()).isSpoil(request.getIsSpoil()).photocard(photoCardUrl)
                 .build();
 
         Review savedReview = reviewRepository.save(review);
@@ -209,5 +208,43 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+    @Transactional
+    public ReviewLikeResponse toggleReviewLike(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+
+        ReviewLike reviewLike = reviewLikeRepository.findReviewLikeByReviewIdAndMemberId(reviewId,
+                memberId).orElseGet(
+                () -> ReviewLike.builder().member(member).review(review).isLike(false).build());
+
+        ReviewLike savedReviewLike = reviewLikeRepository.save(
+                ReviewLike.builder().id(reviewLike.getId()).member(member).review(review)
+                        .isLike(!reviewLike.getIsLike()).build());
+
+        return ReviewLikeResponse.from(savedReviewLike);
+    }
+
+    @Transactional
+    public ReviewLikeResponse getReviewLike(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+
+        ReviewLike reviewLike = reviewLikeRepository.findReviewLikeByReviewIdAndMemberId(reviewId,
+                memberId).orElseGet(
+                () -> ReviewLike.builder().member(member).review(review).isLike(false).build());
+
+        return ReviewLikeResponse.from(reviewLike);
+    }
 }

@@ -2,17 +2,14 @@ package hyundai.movie.domains.movie.api.response;
 
 import hyundai.movie.domains.movie.domain.Director;
 import hyundai.movie.domains.movie.domain.Movie;
-import hyundai.movie.domains.movie.domain.MovieGenre;
 import hyundai.movie.domains.movie.domain.MovieImage;
 import hyundai.movie.domains.movie.dto.ActorDto;
 import hyundai.movie.domains.movie.dto.DirectorDto;
 import hyundai.movie.domains.movie.dto.GenreDto;
-import hyundai.movie.domains.movie.dto.PosterDto;
+import hyundai.movie.domains.movie.dto.ImageDto;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class MovieResponse {
@@ -28,12 +25,12 @@ public class MovieResponse {
     private final String overview;
     private final DirectorDto director;
     private final List<ActorDto> actors;
-    private final PosterDto poster;
+    private final ImageDto poster;
 
     @Builder
     private MovieResponse(Long movieId, String title, String releaseDate, String certification,
             Integer runtime, String status, List<GenreDto> genres, String tagline, String overview,
-            DirectorDto director, List<ActorDto> actors, PosterDto poster) {
+            DirectorDto director, List<ActorDto> actors, ImageDto poster) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -70,9 +67,9 @@ public class MovieResponse {
                         .toList())
                 .poster(movie.getImages().stream()
                         .filter(MovieImage::getIsPoster)
-                        .map(PosterDto::from)
+                        .map(ImageDto::from)
                         .findFirst()
-                        .orElseGet(() -> PosterDto.from(new MovieImage())))
+                        .orElseGet(() -> ImageDto.from(new MovieImage())))
                 .build();
     }
 }

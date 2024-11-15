@@ -57,12 +57,15 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 최신 이미지 pull
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest
-            
             # 기존 컨테이너 중지 및 삭제
             docker stop backend-container || true
             docker rm backend-container || true
+            
+            # 기존 이미지 삭제
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest || true
+
+            # 최신 이미지 pull
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/review-backend:latest
             
             # 새 컨테이너 실행
             docker run -d \
