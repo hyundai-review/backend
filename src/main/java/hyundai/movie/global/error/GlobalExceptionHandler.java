@@ -1,5 +1,6 @@
 package hyundai.movie.global.error;
 
+import hyundai.movie.domains.comment.exception.CommentNotFoundException;
 import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
@@ -161,5 +162,23 @@ public class GlobalExceptionHandler {
                         "리뷰 정보를 찾을 수 없습니다",
                         errors));
     }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFoundException(CommentNotFoundException ex) {
+        log.error("답글 정보를 찾을 수 없음", ex);
+
+        // 오류 메시지를 담을 Map 생성
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+
+        // ErrorResponse를 반환하여 클라이언트에게 예외 정보를 전달
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        "답글 정보를 찾을 수 없습니다",
+                        errors));
+    }
+
 
 }
