@@ -1,6 +1,9 @@
 package hyundai.movie.domains.review.api.response;
 
 import hyundai.movie.domains.review.domain.Review;
+import hyundai.movie.domains.review.dto.MyReviewDto;
+import hyundai.movie.domains.review.dto.ReviewDto;
+import hyundai.movie.domains.review.dto.SliceInfoDto;
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
@@ -8,13 +11,13 @@ import java.util.List;
 
 @Getter
 public class ReviewListResponse {
-    private final MyReviewResponse myReview;
-    private final List<ReviewResponse> otherReviewList;
-    private final SliceInfo pageable;
+    private final MyReviewDto myReview;
+    private final List<ReviewDto> otherReviewList;
+    private final SliceInfoDto pageable;
 
-    public ReviewListResponse( MyReviewResponse myReview, List<ReviewResponse> otherReviewList, Slice<Review> reviewSlice, int totalPages) {
+    public ReviewListResponse( MyReviewDto myReview, List<ReviewDto> otherReviewList, Slice<Review> reviewSlice, int totalPages) {
         this.myReview = myReview;
         this.otherReviewList = otherReviewList;
-        this.pageable = new SliceInfo(reviewSlice, totalPages);
+        this.pageable = new SliceInfoDto(reviewSlice, totalPages);
     }
 }
