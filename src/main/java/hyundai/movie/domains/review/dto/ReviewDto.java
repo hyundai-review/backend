@@ -11,34 +11,34 @@ public class ReviewDto {
     private final Boolean isSpoil;
     private final String content;
     private final String photocard;
-  //  private final Integer totalComments; // 리뷰에 달린 전체 댓글 수
+    private final Integer totalComments; // 리뷰에 달린 전체 댓글 수
     private final AuthorInfo author;
     private final Boolean isLike; // 로그인한 사용자가 좋아요를 눌렀는지 여부
     private final String createdAt;
     private final String updatedAt;
 
-    private ReviewDto(Long reviewId, Integer rating, Boolean isSpoil, String content, String photocard,  AuthorInfo author, Boolean isLike, String createdAt, String updatedAt) {
+    private ReviewDto(Long reviewId, Integer rating, Boolean isSpoil, String content, String photocard, Integer totalComments,  AuthorInfo author, Boolean isLike, String createdAt, String updatedAt) {
         this.reviewId = reviewId;
         this.rating = rating;
         this.isSpoil = isSpoil;
         this.content = content;
         this.photocard = photocard;
-    //    this.totalComments = totalComments;
+        this.totalComments = totalComments;
         this.author = author;
         this.isLike = isLike;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static ReviewDto from(Review review, boolean isLike) {
+    public static ReviewDto from(Review review, boolean isLike, int totalComments) {
         return new ReviewDto(
                 review.getId(),
                 review.getRating(),
                 review.getIsSpoil(),
                 review.getContent(),
                 review.getPhotocard(),
-           //     review.getTotalComments(),  // `getTotalComments()`는 실제 구현에 따라 수정이 필요할 수 있음
-                AuthorInfo.from(review.getMember()),
+                totalComments,
+                new AuthorInfo(review.getMember().getProfile(), review.getMember().getNickname()),
                 isLike,
                 review.getCreatedAt().toString(),
                 review.getUpdatedAt().toString()
