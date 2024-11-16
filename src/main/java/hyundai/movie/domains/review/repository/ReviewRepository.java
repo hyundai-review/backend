@@ -3,6 +3,7 @@ package hyundai.movie.domains.review.repository;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.review.domain.Review;
+import hyundai.movie.domains.review.dto.RecentReviewDto;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 나의 리뷰
     Slice<Review> findByMemberId(Long memberId, Pageable pageable);
     int countByMemberId(Long memberId);
+
+    // 최근 10개
+    List<Review> findTop10ByOrderByCreatedAtDesc();
 
     boolean existsByMovieAndMember(Movie movie, Member member);
     int countByMovie(Movie movie);
