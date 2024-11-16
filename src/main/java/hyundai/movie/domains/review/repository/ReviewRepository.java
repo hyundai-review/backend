@@ -27,7 +27,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.movie = :movie AND r.member <> :member")
     Slice<Review> findAllReviewsExceptMember(@Param("movie") Movie movie, @Param("member") Member member, Pageable pageable);
 
-
+    // 나의 리뷰
+    Slice<Review> findByMemberId(Long memberId, Pageable pageable);
+    int countByMemberId(Long memberId);
 
     boolean existsByMovieAndMember(Movie movie, Member member);
     int countByMovie(Movie movie);
