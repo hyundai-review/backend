@@ -10,6 +10,7 @@ import hyundai.movie.domains.movie.repository.MovieRepository;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
+import hyundai.movie.domains.review.api.response.MyReviewListResponse;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
 import hyundai.movie.domains.review.api.response.ReviewLikeResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
@@ -19,6 +20,7 @@ import hyundai.movie.domains.review.domain.Review;
 import hyundai.movie.domains.review.domain.ReviewLike;
 import hyundai.movie.domains.review.dto.MyReviewDto;
 import hyundai.movie.domains.review.dto.ReviewDto;
+import hyundai.movie.domains.review.dto.ReviewforMyPageDto;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
 import hyundai.movie.domains.review.exception.InvalidPageRequestException;
 import hyundai.movie.domains.review.exception.ReviewNotFoundException;
@@ -208,6 +210,28 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+
+    // myreview 조회
+    public MyReviewListResponse getMyReviews(PageRequest pageRequest) {
+
+        Member member = getAuthenticatedMember();
+
+        // 리뷰 조회
+        Slice<Review> reviewSlice = reviewRepository.findByMemberId(member.getId(), pageRequest);
+
+        // 전체 리뷰 수 가져오기
+        int totalElements = reviewRepository.countByMemberId(member.getId());
+        int totalPages = (int) Math.ceil((double) totalElements / pageRequest.getPageSize());
+
+        // DTO 매핑
+        Slice<ReviewforMyPageDto> dtoSlice = reviewSlice.map(review -> {
+            int totalComments = commentRepository.countByReview(review);
+            return ReviewforMyPageDto.from(review, totalComments);
+        });
+
+        return new MyReviewListResponse(dtoSlice, totalPages);
+    }
+
     @Transactional
     public ReviewLikeResponse toggleReviewLike(Long reviewId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -247,4 +271,6 @@ public class ReviewService {
 
         return ReviewLikeResponse.from(reviewLike);
     }
+
+
 }
