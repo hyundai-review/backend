@@ -4,9 +4,11 @@ import hyundai.movie.domains.comment.repository.CommentRepository;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.member.repository.MemberRepository;
+import hyundai.movie.domains.member.service.MemberVectorService;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.MovieRepository;
+import hyundai.movie.domains.movie.service.MovieRecommendationService;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
@@ -47,6 +49,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final MovieRepository movieRepository;
+    private final MemberVectorService memberVectorService;
+    private final MovieRecommendationService movieRecommendationService;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final S3Service s3Service;
@@ -78,6 +82,16 @@ public class ReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
+        /* 추천 시스템 시작 */
+
+        // 1. 상세 조회에 대한 벡터 업데이트
+        memberVectorService.updateVectorsByReview(member.getId(), movieId, false);
+
+        // 2. 추천 계산 트리거 (비동기)
+        movieRecommendationService.calculateRecommendation(member);
+
+        /* 추천 시스템 종료 */
+
         return TextReviewCreateResponse.from(savedReview);
     }
 
@@ -96,6 +110,16 @@ public class ReviewService {
         Review review = Review.builder().movie(movie).member(member).rating(request.getRating())
                 .content(request.getContent()).isSpoil(request.getIsSpoil()).photocard(photoCardUrl)
                 .build();
+
+        /* 추천 시스템 시작 */
+
+        // 1. 상세 조회에 대한 벡터 업데이트
+        memberVectorService.updateVectorsByReview(member.getId(), movieId, true);
+
+        // 2. 추천 계산 트리거 (비동기)
+        movieRecommendationService.calculateRecommendation(member);
+
+        /* 추천 시스템 종료 */
 
         Review savedReview = reviewRepository.save(review);
         return PhotoReviewCreateResponse.from(savedReview);
@@ -126,6 +150,7 @@ public class ReviewService {
         }
     }
 
+    @Transactional
     public ReviewListResponse getReviewsByMovie(Long movieId, PageRequest pageRequest) {
         if (pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() <= 0) {
             throw new InvalidPageRequestException("페이지 번호와 페이지 크기는 0 이상이어야 합니다.");
@@ -155,6 +180,16 @@ public class ReviewService {
         // 전체 리뷰 이용해서 totalPages 계산
         int totalReviews = reviewRepository.countByMovie(movie); // 전체 리뷰 수
         int totalPages = (int) Math.ceil((double) totalReviews / pageRequest.getPageSize());
+
+        /* 추천 시스템 시작 */
+
+        // 1. 상세 조회에 대한 벡터 업데이트
+        memberVectorService.updateVectorsByMovieView(member.getId(), movieId);
+
+        // 2. 추천 계산 트리거 (비동기)
+        movieRecommendationService.calculateRecommendation(member);
+
+        /* 추천 시스템 종료 */
 
         return new ReviewListResponse(
                 myReview,

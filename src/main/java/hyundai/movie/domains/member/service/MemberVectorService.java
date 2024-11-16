@@ -9,7 +9,6 @@ import hyundai.movie.domains.member.exception.MemberNotFoundException;
 import hyundai.movie.domains.member.repository.MemberRepository;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.movie.domain.MovieActor;
-import hyundai.movie.domains.movie.domain.MovieGenre;
 import hyundai.movie.domains.movie.exception.MovieNotFoundException;
 import hyundai.movie.domains.movie.repository.MovieRepository;
 import java.time.LocalDateTime;
@@ -90,7 +89,7 @@ public class MemberVectorService {
 
     private void updateGenreVector(Member member, Movie movie, double weight) {
         Set<String> updatingIds = movie.getMovieGenres().stream()
-                .map(MovieGenre::getId)
+                .map(mg -> mg.getGenre().getId())
                 .map(String::valueOf)
                 .collect(Collectors.toSet());
 
@@ -152,6 +151,7 @@ public class MemberVectorService {
             // 2-2. 새로운 ID 추가
             updatingIds.forEach(id -> {
                 if (!updatedVector.containsKey(id)) {
+                    log.info("###### " + vectorType + "에 대해서,,, id : " + id + ", 정보 변경");
                     updatedVector.put(id, VectorValueDto.create(weight));
                 }
             });

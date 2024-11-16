@@ -10,6 +10,7 @@ import hyundai.movie.domains.movie.domain.MovieRecommendation;
 import hyundai.movie.domains.movie.dto.MovieScoreDto;
 import hyundai.movie.domains.movie.repository.MovieRecommendationRepository;
 import hyundai.movie.domains.movie.repository.MovieRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MovieRecommendationService {
     private final MovieRecommendationRepository movieRecommendationRepository;
@@ -309,8 +311,7 @@ public class MovieRecommendationService {
         combined.sort(Comparator.comparingDouble(MovieScoreDto::getFinalScore).reversed());
 
         return combined.stream()
-                .map(MovieScoreDto::getMovieId)
-                .collect(Collectors.toList());
+                .map(MovieScoreDto::getMovieId).distinct().collect(Collectors.toList());
     }
 
 }
