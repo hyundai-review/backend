@@ -3,7 +3,9 @@ package hyundai.movie.domains.review.api;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
+import hyundai.movie.domains.review.api.response.MyReviewListResponse;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.RecentReviewResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
 import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
@@ -77,6 +79,24 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();
+    }
+
+    // 나의 리뷰 조회
+    @GetMapping("/my")
+    public ResponseEntity<MyReviewListResponse> getMyReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        MyReviewListResponse response = reviewService.getMyReviews(pageRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 최근 리뷰 10개
+    @GetMapping("/recents")
+    public ResponseEntity<RecentReviewResponse> getRecentReviews() {
+        RecentReviewResponse response = reviewService.getRecentReviews();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{reviewId}/like")
