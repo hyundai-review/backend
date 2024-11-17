@@ -161,7 +161,7 @@ public class ReviewService {
         int totalPages = (int) Math.ceil((double) totalReviews / pageRequest.getPageSize());
 
         Double averageRating = reviewRepository.getAverageRatingByMovieId(movieId);
-
+        averageRating = averageRating != null ? averageRating : 0.0;
 
         return new ReviewListResponse(
                 myReview,
