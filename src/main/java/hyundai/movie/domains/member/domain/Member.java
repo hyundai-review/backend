@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,11 +20,28 @@ public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nickname;
+
     private String profile;
+
     @Column(unique = true)
     private String providerId;
+
     private Boolean isActive;
+
+    // 벡터 필드 추가
+    @Column(columnDefinition = "TEXT")
+    private String genreVector;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String actorVector;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String directorVector;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String lastViewTimes;
 
     @Builder
     public Member(String nickname, String providerId, String profile, Boolean isActive) {
@@ -31,6 +49,15 @@ public class Member extends BaseTimeEntity {
         this.profile = profile;
         this.providerId = providerId;
         this.isActive = isActive;
+        initVectors();
+    }
+
+    @PrePersist
+    private void initVectors() {
+        this.genreVector = "{}";
+        this.actorVector = "{}";
+        this.directorVector = "{}";
+        this.lastViewTimes = "{}";
     }
 
     // 닉네임 업데이트 메서드
@@ -54,4 +81,23 @@ public class Member extends BaseTimeEntity {
     }
 
 
+    // 상세 영화를 본 시점 업데이트
+    public void updateLastViewTimes(String newLastViewTimes) {
+        this.lastViewTimes = newLastViewTimes;
+    }
+
+    // 장르 벡터 업데이트
+    public void updateGenreVector(String newGenreVector) {
+        this.genreVector = newGenreVector;
+    }
+
+    // 배우 벡터 업데이트
+    public void updateActorVector(String newActorVector) {
+        this.actorVector = newActorVector;
+    }
+
+    // 감독 벡터 업데이트
+    public void updateDirectorVector(String newDirectorVector) {
+        this.directorVector = newDirectorVector;
+    }
 }
