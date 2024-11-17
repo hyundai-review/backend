@@ -3,62 +3,62 @@ INSERT INTO member (nickname, profile, provider_id, is_active, actor_vector, dir
 VALUES ('아보카도파김치', 'profile', 'providerId', true, '{}', '{}', '{}', '{}', CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (28, '액션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (153, 28, '액션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (12, '모험', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (154, 12, '모험', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (16, '애니메이션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (155, 16, '애니메이션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (35, '코미디', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (156, 35, '코미디', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (80, '범죄', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (157, 80, '범죄', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (99, '다큐멘터리', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (158, 99, '다큐멘터리', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (18, '드라마', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (159, 18, '드라마', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (10751, '가족', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (160, 10751, '가족', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (14, '판타지', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (161, 14, '판타지', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (36, '역사', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (162, 36, '역사', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (27, '공포', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (163, 27, '공포', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (10402, '음악', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (164, 10402, '음악', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (9648, '미스터리', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (165, 9648, '미스터리', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (10749, '로맨스', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (166, 10749, '로맨스', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (878, 'SF', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (167, 878, 'SF', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (10770, 'TV 영화', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (168, 10770, 'TV 영화', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (53, '스릴러', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (169, 53, '스릴러', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (10752, '전쟁', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (170, 10752, '전쟁', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO genre (tmdb_id, name, created_at, updated_at)
-VALUES (37, '서부', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO genre (id, tmdb_id, name, created_at, updated_at)
+VALUES (171, 37, '서부', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO movie (tmdb_id, title, release_date, tagline, overview,
                    runtime, certification, status, popularity, vote_avg, revenue,

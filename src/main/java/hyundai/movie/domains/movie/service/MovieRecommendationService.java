@@ -13,7 +13,6 @@ import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -171,29 +170,27 @@ public class MovieRecommendationService {
         }
     }
 
-    private static final List<Double> GENRE_WEIGHTS = Arrays.asList(
-            0.0,    // 0번 인덱스는 사용하지 않음
-            1.0,    // 1: 액션 (메인)
-            0.7,    // 2: 모험 (중요 보조)
-            1.0,    // 3: 애니메이션 (메인)
-            1.0,    // 4: 코미디 (메인)
-            0.7,    // 5: 범죄 (중요 보조)
-            1.0,    // 6: 다큐멘터리 (메인)
-            0.5,    // 7: 드라마 (일반 보조)
-            0.5,    // 8: 가족 (일반 보조)
-            0.7,    // 9: 판타지 (중요 보조)
-            0.5,    // 10: 역사 (일반 보조)
-            1.0,    // 11: 공포 (메인)
-            0.5,    // 12: 음악 (일반 보조)
-            0.5,    // 13: 미스터리 (일반 보조)
-            1.0,    // 14: 로맨스 (메인)
-            1.0,    // 15: SF (메인)
-            0.5,    // 16: TV 영화 (일반 보조)
-            0.7,    // 17: 스릴러 (중요 보조)
-            0.5,    // 18: 전쟁 (일반 보조)
-            0.5     // 19: 서부 (일반 보조)
+    private static final Map<Long, Double> GENRE_WEIGHTS = Map.ofEntries(
+            Map.entry(153L, 1.0),    // 액션 (메인)
+            Map.entry(154L, 0.7),    // 모험 (중요 보조)
+            Map.entry(155L, 1.0),    // 애니메이션 (메인)
+            Map.entry(156L, 1.0),    // 코미디 (메인)
+            Map.entry(157L, 0.7),    // 범죄 (중요 보조)
+            Map.entry(158L, 1.0),    // 다큐멘터리 (메인)
+            Map.entry(159L, 0.5),    // 드라마 (일반 보조)
+            Map.entry(160L, 0.5),    // 가족 (일반 보조)
+            Map.entry(161L, 0.7),    // 판타지 (중요 보조)
+            Map.entry(162L, 0.5),    // 역사 (일반 보조)
+            Map.entry(163L, 1.0),    // 공포 (메인)
+            Map.entry(164L, 0.5),    // 음악 (일반 보조)
+            Map.entry(165L, 0.5),    // 미스터리 (일반 보조)
+            Map.entry(166L, 1.0),    // 로맨스 (메인)
+            Map.entry(167L, 1.0),    // SF (메인)
+            Map.entry(168L, 0.5),    // TV 영화 (일반 보조)
+            Map.entry(169L, 0.7),    // 스릴러 (중요 보조)
+            Map.entry(170L, 0.5),    // 전쟁 (일반 보조)
+            Map.entry(171L, 0.5)     // 서부 (일반 보조)
     );
-
 
     private double calculateGenreSimilarity(Movie movie, Map<String, VectorValueDto> memberGenreVector) {
         // 기본 검증
@@ -207,16 +204,16 @@ public class MovieRecommendationService {
             movieGenreWeights = movie.getMovieGenres().stream()
                     .collect(Collectors.toMap(
                             mg -> mg.getGenre().getId().toString(),
-                            mg -> GENRE_WEIGHTS.get(Math.toIntExact(mg.getGenre().getId()))
+                            mg -> GENRE_WEIGHTS.get(mg.getGenre().getId())
                     ));
         }
 
-        // 2. 전체 19개 장르에 대한 사용자 선호도 벡터 생성 및 평균 계산
+        // 2. 전체 장르에 대한 사용자 선호도 벡터 생성 및 평균 계산
         double memberSum = 0.0;
         Map<String, Double> normalizedMemberVector = new HashMap<>();
 
-        // 전체 19개 장르에 대해 순회하며 데이터 설정
-        for (int genreId = 1; genreId <= 19; genreId++) {
+        // 153부터 171까지의 장르에 대해 순회
+        for (long genreId = 153L; genreId <= 171L; genreId++) {
             String genreIdStr = String.valueOf(genreId);
             VectorValueDto vectorValue = memberGenreVector.get(genreIdStr);
             double score = (vectorValue != null) ? vectorValue.getScore() : 0.0;
@@ -230,7 +227,7 @@ public class MovieRecommendationService {
 
         // 영화 장르 평균도 전체 19개 기준으로 계산
         double movieSum = 0.0;
-        for (int genreId = 1; genreId <= 19; genreId++) {
+        for (long genreId = 153L; genreId <= 171L; genreId++) {
             String genreIdStr = String.valueOf(genreId);
             movieSum += movieGenreWeights.getOrDefault(genreIdStr, 0.0);
         }
@@ -242,7 +239,7 @@ public class MovieRecommendationService {
         double memberDenominator = 0.0;
         double movieDenominator = 0.0;
 
-        for (int genreId = 1; genreId <= 19; genreId++) {
+        for (long genreId = 153L; genreId <= 171L; genreId++) {
             String genreIdStr = String.valueOf(genreId);
 
             // 사용자의 해당 장르 선호도 - 평균
