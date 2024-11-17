@@ -1,5 +1,7 @@
-INSERT INTO member (nickname, profile, provider_id, is_active, created_at, updated_at)
-VALUES ('아보카도파김치', 'profile', 'providerId', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO member (nickname, profile, provider_id, is_active, actor_vector, director_vector,
+                    genre_vector, last_view_times, created_at, updated_at)
+VALUES ('아보카도파김치', 'profile', 'providerId', true, '{}', '{}', '{}', '{}', CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP);
 
 INSERT INTO genre (tmdb_id, name, created_at, updated_at)
 VALUES (28, '액션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -92,7 +94,8 @@ SELECT 2524,
        '톰 하디',
        '/d81K0RH8UX7tZj49tZaQhZ9ewH.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '톰 하디');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '톰 하디');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Eddie Brock / Venom', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -106,7 +109,8 @@ SELECT 5294,
        '추이텔 에지오포',
        '/kq5DDnqqofoRI0t6ddtRlsJnNPT.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '추이텔 에지오포');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '추이텔 에지오포');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'General Rex Strickland', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -120,7 +124,8 @@ SELECT 36594,
        '주노 템플',
        '/wMpZcKp7zaHnmNQooqbve33577Q.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '주노 템플');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '주노 템플');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Dr. Teddy Paine', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -134,7 +139,8 @@ SELECT 1861573,
        'Clark Backo',
        '/d24KKFxfoql6PBsBPsejFgzhSlH.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Clark Backo');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Clark Backo');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Sadie Christmas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -148,7 +154,8 @@ SELECT 7026,
        '리스 에반스',
        '/1D670EEsbky3EtO7XLG32A09p92.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리스 에반스');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리스 에반스');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Martin Moon', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -162,7 +169,8 @@ SELECT 940376,
        'Kelly Marcel',
        '/thpdVW7O1975GcA3eNs1H8UIlmd.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Kelly Marcel');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Kelly Marcel');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -214,7 +222,8 @@ SELECT 1882502,
        '로렌 라베라',
        '/qJYWq2oZcvHh7lnGskxkrYXCom0.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로렌 라베라');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로렌 라베라');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Sienna Shaw', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -228,7 +237,8 @@ SELECT 2787720,
        'Elliott Fullam',
        '/dNsFLihmWfA2KCENbZCtq9AjSob.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Elliott Fullam');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Elliott Fullam');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Jonathan Shaw', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -242,7 +252,8 @@ SELECT 1880016,
        '데이비드 하워드 손턴',
        '/9nYijs4ACzjg93zKezLiLmuRGvp.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '데이비드 하워드 손턴');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '데이비드 하워드 손턴');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Art the Clown', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -256,7 +267,8 @@ SELECT 1676771,
        'Samantha Scaffidi',
        '/jwd0XXuc4ibXAXjOxmhsFP0fQEO.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Samantha Scaffidi');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Samantha Scaffidi');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Victoria Heyes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -270,7 +282,8 @@ SELECT 37405,
        'Margaret Anne Florence',
        '/c2EqBueLCrn6XEnmfutylUd1icl.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Margaret Anne Florence');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Margaret Anne Florence');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Jessica', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -284,7 +297,8 @@ SELECT 933176,
        'Damien Leone',
        '/nX2kkYD32x2PC9rRU7DrYCRPjFE.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Damien Leone');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Damien Leone');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -336,7 +350,8 @@ SELECT 2422766,
        'Francisco Ortiz',
        '/iIwGt05vG5smGDiLJ7f6bMRQOOY.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Francisco Ortiz');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Francisco Ortiz');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Manel', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -350,7 +365,8 @@ SELECT 72128,
        'José María Yázpik',
        '/uqZE7oXEADJ1NTg7g7xRELw59Hy.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'José María Yázpik');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'José María Yázpik');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Pritchenko', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -364,7 +380,8 @@ SELECT 1457340,
        'Berta Vázquez',
        '/2QNOI5L03XomONmCR42GPyVYryy.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Berta Vázquez');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Berta Vázquez');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Lucía', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -378,7 +395,8 @@ SELECT 2264694,
        'Iria del Río',
        '/z7Dqvpnb8R13P6B5pmUCDxb2Jvv.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Iria del Río');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Iria del Río');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Julia', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -392,7 +410,8 @@ SELECT 1460406,
        'Marta Poveda',
        '/gsQvVa5uipx5YAQ8esJevlmPjsv.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Marta Poveda');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Marta Poveda');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Belén', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -406,7 +425,8 @@ SELECT 1017209,
        'Carles Torrens',
        '/jBGDX4BwsytGhPehgrrPKFFlIgn.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Carles Torrens');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = 'Carles Torrens');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -459,7 +479,8 @@ SELECT 1267329,
        '루피타 뇽오',
        '/y40Wu1T742kynOqtwXASc5Qgm49.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '루피타 뇽오');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '루피타 뇽오');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Roz / Rummage (voice)', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -473,7 +494,8 @@ SELECT 1253360,
        '페드로 파스칼',
        '/9VYK7oxcqhjd5LAH6ZFJ3XzOlID.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '페드로 파스칼');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '페드로 파스칼');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Fink (voice)', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -487,7 +509,8 @@ SELECT 1538851,
        '킷 코너',
        '/gCIdbnV9D3lzTaOB0YtuKDz6Nt0.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '킷 코너');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '킷 코너');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Brightbill (voice)', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -501,7 +524,8 @@ SELECT 2440,
        '빌 나이',
        '/ixFI2YCGNGJfwlpI8iyhvVZRg8C.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '빌 나이');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '빌 나이');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Longneck (voice)', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -515,7 +539,8 @@ SELECT 1381186,
        '스테파니 수',
        '/8gb3lfIHKQAGOQyeC4ynQPsCiHr.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '스테파니 수');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '스테파니 수');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Vontra (voice)', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -529,7 +554,8 @@ SELECT 66193,
        '크리스 샌더스',
        '/6CtrIOCxggJ5eIAWeFQqd4Hs9FP.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '크리스 샌더스');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '크리스 샌더스');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -582,7 +608,8 @@ SELECT 10859,
        '라이언 레이놀즈',
        '/6m3hkkHmKkD4MUJhng7ojE7MLKC.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '라이언 레이놀즈');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '라이언 레이놀즈');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Wade Wilson / Deadpool / Nicepool', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -596,7 +623,8 @@ SELECT 6968,
        '휴 잭맨',
        '/4Xujtewxqt6aU0Y81tsS9gkjizk.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '휴 잭맨');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '휴 잭맨');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Logan / Wolverine', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -610,7 +638,8 @@ SELECT 2324569,
        '엠마 코린',
        '/wqGOVOsHzZaHeHymIS40elGCnY0.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '엠마 코린');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '엠마 코린');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Cassandra Nova', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -624,7 +653,8 @@ SELECT 15576,
        '매튜 맥패디언',
        '/2FF3Yjxd7DYR4EIJL6s2GpKDMkJ.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '매튜 맥패디언');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '매튜 맥패디언');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Mr. Paradox', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -638,7 +668,8 @@ SELECT 1464650,
        '다프네 킨',
        '/g325OIjIHrFr0te8ewPfhKQ2SKj.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '다프네 킨');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '다프네 킨');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Laura / X-23', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -652,7 +683,8 @@ SELECT 17825,
        '숀 레비',
        '/j1CXZgmfvFeD7S3PYtsEk8H3ebB.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '숀 레비');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '숀 레비');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -698,7 +730,8 @@ SELECT 504,
        '팀 로빈스',
        '/djLVFETFTvPyVUdrd7aLVykobof.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '팀 로빈스');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '팀 로빈스');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Andy Dufresne', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -712,7 +745,8 @@ SELECT 192,
        '모건 프리먼',
        '/905k0RFzH0Kd6gx8oSxRdnr6FL.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '모건 프리먼');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '모건 프리먼');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Ellis Boyd ''Red'' Redding', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -726,7 +760,8 @@ SELECT 4029,
        'Bob Gunton',
        '/ulbVvuBToBN3aCGcV028hwO0MOP.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Bob Gunton');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Bob Gunton');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Warden Norton', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -740,7 +775,8 @@ SELECT 6573,
        'William Sadler',
        '/rWeb2kjYCA7V9MC9kRwRpm57YoY.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'William Sadler');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'William Sadler');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Heywood', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -754,7 +790,8 @@ SELECT 6574,
        '클랜시 브라운',
        '/1JeBRNG7VS7r64V9lOvej9bZXW5.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '클랜시 브라운');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '클랜시 브라운');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Captain Byron T. Hadley', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -768,7 +805,8 @@ SELECT 4027,
        '프랭크 다라본트',
        '/7LqmE3p1XTwCdNCOmBxovq210Qk.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랭크 다라본트');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랭크 다라본트');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -814,7 +852,8 @@ SELECT 3084,
        '말론 브란도',
        '/fuTEPMsBtV1zE98ujPONbKiYDc2.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '말론 브란도');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '말론 브란도');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Don Vito Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -828,7 +867,8 @@ SELECT 1158,
        '알 파치노',
        '/2dGBb1fOcNdZjtQToVPFxXjm4ke.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '알 파치노');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '알 파치노');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Michael Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -842,7 +882,8 @@ SELECT 3085,
        '제임스 칸',
        '/oRTyqWg0LReELvjms8WwkeTsDFS.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '제임스 칸');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '제임스 칸');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Sonny Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -856,7 +897,8 @@ SELECT 3087,
        '로버트 듀발',
        '/ybMmK25h4IVtfE7qrnlVp47RQlh.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 듀발');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 듀발');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Tom Hagen', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -870,7 +912,8 @@ SELECT 3086,
        'Richard S. Castellano',
        '/1vr75BdHWret81vuSJ3ugiCBkxw.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Richard S. Castellano');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Richard S. Castellano');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Clemenza', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -884,7 +927,8 @@ SELECT 1776,
        '프랜시스 포드 코폴라',
        '/3Pblihd6KjXliie9vj4iQJwbNPU.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랜시스 포드 코폴라');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랜시스 포드 코폴라');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -930,7 +974,8 @@ SELECT 1158,
        '알 파치노',
        '/2dGBb1fOcNdZjtQToVPFxXjm4ke.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '알 파치노');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '알 파치노');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Don Michael Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -944,7 +989,8 @@ SELECT 3087,
        '로버트 듀발',
        '/ybMmK25h4IVtfE7qrnlVp47RQlh.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 듀발');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 듀발');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Tom Hagen', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -958,7 +1004,8 @@ SELECT 3092,
        '다이앤 키튼',
        '/tuLGQLb2IVWtar4MU3Hg5z9damM.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '다이앤 키튼');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '다이앤 키튼');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Kay Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -972,7 +1019,8 @@ SELECT 380,
        '로버트 드 니로',
        '/cT8htcckIuyI1Lqwt1CvD02ynTh.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 드 니로');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '로버트 드 니로');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Vito Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -986,7 +1034,8 @@ SELECT 3096,
        '존 카제일',
        '/ff2MXG4OpO5wJCu75l3iE5Xxjm7.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '존 카제일');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '존 카제일');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Frederico ''Fredo'' Corleone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1000,7 +1049,8 @@ SELECT 1776,
        '프랜시스 포드 코폴라',
        '/3Pblihd6KjXliie9vj4iQJwbNPU.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랜시스 포드 코폴라');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '프랜시스 포드 코폴라');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1053,7 +1103,8 @@ SELECT 3896,
        '리암 니슨',
        '/sRLev3wJioBgun3ZoeAUFpkLy0D.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리암 니슨');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리암 니슨');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Oskar Schindler', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1067,7 +1118,8 @@ SELECT 2282,
        '벤 킹슬리',
        '/vQtBqpF2HDdzbfXHDzR4u37i1Ac.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '벤 킹슬리');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '벤 킹슬리');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Itzhak Stern', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1081,7 +1133,8 @@ SELECT 5469,
        '레이프 파인스',
        '/tJr9GcmGNHhLVVEH3i7QYbj6hBi.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '레이프 파인스');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '레이프 파인스');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Amon Goeth', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1095,7 +1148,8 @@ SELECT 6692,
        'Caroline Goodall',
        '/4cagGtMqACvkuw6Llq8Li8UJ1AR.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Caroline Goodall');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Caroline Goodall');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Emilie Schindler', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1109,7 +1163,8 @@ SELECT 6693,
        'Jonathan Sagall',
        '/waxNDsgfw7CXXO3LH8EdKi8z7VV.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Jonathan Sagall');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Jonathan Sagall');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Poldek Pfefferberg', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1123,7 +1178,8 @@ SELECT 488,
        '스티븐 스필버그',
        '/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '스티븐 스필버그');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '스티븐 스필버그');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1161,7 +1217,8 @@ SELECT 1936,
        '마틴 발삼',
        '/2j4LJJfTPQtvnjp8LfSGOvWFATO.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '마틴 발삼');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '마틴 발삼');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Juror 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1175,7 +1232,8 @@ SELECT 5247,
        'John Fiedler',
        '/6vfLLGeGuO6Ko0VRnyhgE2v6RUu.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'John Fiedler');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'John Fiedler');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Juror 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1189,7 +1247,8 @@ SELECT 5248,
        '리J.콥',
        '/dMpk9Xd3BqGOGHyOA1wQCcF8v1I.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리J.콥');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = '리J.콥');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Juror 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1203,7 +1262,8 @@ SELECT 5249,
        'E.G. Marshall',
        '/psimeVoRk64DV7UNm4cLQylRFy2.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'E.G. Marshall');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'E.G. Marshall');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Juror 4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1217,7 +1277,8 @@ SELECT 5250,
        'Jack Klugman',
        '/oJxveOxlunD8C9OczqKeryU0k6D.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Jack Klugman');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM actor WHERE name = 'Jack Klugman');
 
 INSERT INTO movie_actor (movie_id, actor_id, role, created_at, updated_at)
 SELECT m.id, a.id, 'Juror 5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -1231,7 +1292,8 @@ SELECT 39996,
        '시드니 루멧',
        '/hjj3V2DkPJ46zo5uz9bsZQzAk6R.jpg',
        CURRENT_TIMESTAMP,
-       CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '시드니 루멧');
+       CURRENT_TIMESTAMP
+WHERE NOT EXISTS (SELECT 1 FROM director WHERE name = '시드니 루멧');
 
 INSERT INTO movie_director (movie_id, director_id, created_at, updated_at)
 SELECT m.id, d.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
