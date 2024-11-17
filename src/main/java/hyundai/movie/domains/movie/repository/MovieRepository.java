@@ -19,14 +19,17 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m WHERE m.title LIKE %:keyword%")
     Slice<Movie> searchByTitleContaining(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT m FROM Movie m ORDER BY FUNCTION('RANDOM')")
-    Slice<Movie> findRandomMovies(Pageable pageable);
+    @Query("SELECT m FROM Movie m " +
+            "WHERE NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
+            "ORDER BY m.voteAvg")
+    Slice<Movie> findMoviesByVoteAvg(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT m FROM Movie m " +
-            "JOIN m.movieGenres mg " +
-            "WHERE mg.genre.id = :genre_id " +
-            "ORDER BY FUNCTION('RANDOM')")
-    Slice<Movie> findRandomMoviesByGenre(@Param("genre_id") Long genreId, Pageable pageable);
+            "JOIN MovieGenre mg ON m.id = mg.movie.id " +
+            "WHERE mg.genre.id = :genreId " +
+            "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
+            "ORDER BY m.voteAvg")
+    Slice<Movie> findMoviesByGenreAndVoteAvg(@Param("genreId") Long genreId, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT DISTINCT m FROM Movie m " +
             "JOIN m.movieGenres g " +
@@ -41,4 +44,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "GROUP BY m " +
             "ORDER BY m.voteAvg DESC")
     List<Movie> findTop150ByMovieGenresIdNotIn(@Param("includedGenreIds") Set<String> includedGenreIds);
+
+    @Query("SELECT m FROM Movie m " +
+            "WHERE m.id IN :ids " +
+            "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId)")
+    List<Movie> findByIdIn(@Param("ids") List<Long> ids, @Param("memberId") Long memberId);
 }

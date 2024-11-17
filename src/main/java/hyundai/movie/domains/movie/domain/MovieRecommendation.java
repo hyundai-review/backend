@@ -29,7 +29,7 @@ public class MovieRecommendation {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "TEXT")
     private String movieList;
 
     private LocalDateTime lastCalculated;

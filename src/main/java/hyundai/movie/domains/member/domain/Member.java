@@ -31,16 +31,16 @@ public class Member extends BaseTimeEntity {
     private Boolean isActive;
 
     // 벡터 필드 추가
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "TEXT")
     private String genreVector;
 
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "LONGTEXT")
     private String actorVector;
 
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "LONGTEXT")
     private String directorVector;
 
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "LONGTEXT")
     private String lastViewTimes;
 
     @Builder

@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class MemberVectorService {
 
     private static final double WEIGHT_VIEW = 1.0;
-    private static final double WEIGHT_REVIEW = 3.0;
+    private static final double WEIGHT_REVIEW = 4.0;
     private static final double WEIGHT_PHOTO_REVIEW = 5.0;
     private static final double DECAY_RATE = 0.1;
     private static final double THRESHOLD = 0.3;
