@@ -204,7 +204,8 @@ public class MovieRecommendationService {
             movieGenreWeights = movie.getMovieGenres().stream()
                     .collect(Collectors.toMap(
                             mg -> mg.getGenre().getId().toString(),
-                            mg -> GENRE_WEIGHTS.get(mg.getGenre().getId())
+                            mg -> GENRE_WEIGHTS.get(mg.getGenre().getId()),
+                            (existing, replacement) -> existing
                     ));
         }
 
