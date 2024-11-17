@@ -161,6 +161,8 @@ public class ReviewService {
         int totalPages = (int) Math.ceil((double) totalReviews / pageRequest.getPageSize());
 
         Double averageRating = reviewRepository.getAverageRatingByMovieId(movieId);
+        // null 처리: 리뷰가 없는 경우 기본값 0.0 반환
+        averageRating = averageRating != null ? averageRating : 0.0;
 
 
         return new ReviewListResponse(
