@@ -160,13 +160,17 @@ public class ReviewService {
         int totalReviews = reviewRepository.countByMovie(movie); // 전체 리뷰 수
         int totalPages = (int) Math.ceil((double) totalReviews / pageRequest.getPageSize());
 
+        Double averageRating = reviewRepository.getAverageRatingByMovieId(movieId);
+
+
         return new ReviewListResponse(
                 myReview,
                 //  reviewSlice.getContent().stream().map(review -> ReviewResponse.from(review, false)).collect(Collectors.toList()),
                 otherReviewList,
                 reviewSlice,
                 totalPages,
-                totalReviews
+                totalReviews,
+                averageRating
         );
     }
 

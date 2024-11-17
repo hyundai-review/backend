@@ -35,6 +35,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 최근 10개
     List<Review> findTop10ByOrderByCreatedAtDesc();
 
+    // 평점 평균 계산
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId")
+    Double getAverageRatingByMovieId(@Param("movieId") Long movieId);
+
+
     boolean existsByMovieAndMember(Movie movie, Member member);
     int countByMovie(Movie movie);
 
