@@ -15,7 +15,7 @@ public class MovieFetchScheduler {
     private final MovieFetchService movieFetchService;
     private AtomicInteger currentYear = new AtomicInteger(2018); // 시작 연도
 
-    @Scheduled(fixedRate = 20 * 60 * 1000) // 20분마다
+//    @Scheduled(fixedRate = 20 * 60 * 1000) // 20분마다
     public void fetchMoviesByYear() {
         int year = currentYear.get();
 
