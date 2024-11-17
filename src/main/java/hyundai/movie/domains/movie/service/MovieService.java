@@ -27,14 +27,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -100,10 +99,10 @@ public class MovieService {
                         .map(id -> MovieItemResponse.from(movieMap.get(id)))
                         .collect(Collectors.toList());
 
-                return new PageImpl<>(
+                return new SliceImpl<>(
                         movies,
                         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                        totalElements
+                        end < totalElements
                 );
 
             } catch (JsonProcessingException e) {

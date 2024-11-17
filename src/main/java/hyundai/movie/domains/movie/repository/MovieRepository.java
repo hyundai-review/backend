@@ -32,15 +32,15 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Slice<Movie> findMoviesByGenreAndVoteAvg(@Param("genreId") Long genreId, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT DISTINCT m FROM Movie m " +
-            "JOIN m.movieGenres g " +
-            "WHERE g.id IN :genre_ids " +
+            "JOIN m.movieGenres mg " +
+            "WHERE mg.genre.id IN :genre_ids " +
             "GROUP BY m " +
             "ORDER BY m.voteAvg DESC")
     Set<Movie> findMoviesByGenreIds(@Param("genre_ids") Set<String> genreIds);
 
     @Query("SELECT DISTINCT m FROM Movie m " +
-            "LEFT JOIN m.movieGenres g " +
-            "WHERE g.id NOT IN :includedGenreIds " +
+            "LEFT JOIN m.movieGenres mg " +
+            "WHERE mg.genre.id NOT IN :includedGenreIds " +
             "GROUP BY m " +
             "ORDER BY m.voteAvg DESC")
     List<Movie> findTop150ByMovieGenresIdNotIn(@Param("includedGenreIds") Set<String> includedGenreIds);

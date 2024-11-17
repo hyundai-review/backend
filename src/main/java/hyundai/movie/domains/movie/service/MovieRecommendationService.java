@@ -13,8 +13,10 @@ import hyundai.movie.domains.movie.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +51,11 @@ public class MovieRecommendationService {
             // 2. 장르 기반 1차 필터링
             Set<Movie> candidateMovies = filterMoviesByGenre(member);
             Set<String> includedGenreIds = getFilteredGenreIds(member);
+
+            candidateMovies.forEach(
+                    movie -> {
+                        log.info("##### 뽑힌 영화들 : {}", movie.getId());
+                    });
 
             // 3. 각 영화별 유사도 점수 계산
             List<MovieScoreDto> movieScores = calculateSimilarityScores(member, candidateMovies);
@@ -102,7 +109,6 @@ public class MovieRecommendationService {
             );
 
             // 2. 선호 장르 추출 (상위 8개)
-
             Set<String> preferredGenres = genreVector.entrySet().stream()
                     .sorted(Map.Entry.<String, VectorValueDto>comparingByValue(
                             Comparator.comparingDouble(VectorValueDto::getScore)).reversed()
@@ -110,6 +116,10 @@ public class MovieRecommendationService {
                     .limit(TOP_GENRES)
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toSet());
+
+            preferredGenres.forEach(
+                    g -> log.info("###### 장르들 : {}", g)
+            );
 
             // 3. 해당 장르들이 포함된 영화 조회
             return movieRepository.findMoviesByGenreIds(preferredGenres)
@@ -161,43 +171,88 @@ public class MovieRecommendationService {
         }
     }
 
-    private double calculateGenreSimilarity(Movie movie, Map<String, VectorValueDto> userGenreVector) {
-        if (userGenreVector.isEmpty()) {
+    private static final List<Double> GENRE_WEIGHTS = Arrays.asList(
+            0.0,    // 0번 인덱스는 사용하지 않음
+            1.0,    // 1: 액션 (메인)
+            0.7,    // 2: 모험 (중요 보조)
+            1.0,    // 3: 애니메이션 (메인)
+            1.0,    // 4: 코미디 (메인)
+            0.7,    // 5: 범죄 (중요 보조)
+            1.0,    // 6: 다큐멘터리 (메인)
+            0.5,    // 7: 드라마 (일반 보조)
+            0.5,    // 8: 가족 (일반 보조)
+            0.7,    // 9: 판타지 (중요 보조)
+            0.5,    // 10: 역사 (일반 보조)
+            1.0,    // 11: 공포 (메인)
+            0.5,    // 12: 음악 (일반 보조)
+            0.5,    // 13: 미스터리 (일반 보조)
+            1.0,    // 14: 로맨스 (메인)
+            1.0,    // 15: SF (메인)
+            0.5,    // 16: TV 영화 (일반 보조)
+            0.7,    // 17: 스릴러 (중요 보조)
+            0.5,    // 18: 전쟁 (일반 보조)
+            0.5     // 19: 서부 (일반 보조)
+    );
+
+
+    private double calculateGenreSimilarity(Movie movie, Map<String, VectorValueDto> memberGenreVector) {
+        // 기본 검증
+        if (memberGenreVector == null) {
             return 0.0;
         }
 
-        // 1. 영화의 장르 ID Set
-        Set<String> movieGenreIds = movie.getMovieGenres().stream()
-                .map(mg -> mg.getId().toString())
-                .collect(Collectors.toSet());
-
-        if (movieGenreIds.isEmpty()) {
-            return 0.0;
+        // 1. 영화의 장르 가중치 계산
+        Map<String, Double> movieGenreWeights = new HashMap<>();
+        if (movie.getMovieGenres() != null) {
+            movieGenreWeights = movie.getMovieGenres().stream()
+                    .collect(Collectors.toMap(
+                            mg -> mg.getGenre().getId().toString(),
+                            mg -> GENRE_WEIGHTS.get(Math.toIntExact(mg.getGenre().getId()))
+                    ));
         }
 
-        // 2. userGenreVector의 평균 선호도 계산
-        double userMean = userGenreVector.values().stream()
-                .mapToDouble(VectorValueDto::getScore)
-                .average()
-                .orElse(0.0);
+        // 2. 전체 19개 장르에 대한 사용자 선호도 벡터 생성 및 평균 계산
+        double memberSum = 0.0;
+        Map<String, Double> normalizedMemberVector = new HashMap<>();
 
-        // 3. 영화 장르의 평균 (있으면 1, 없으면 0)
-        double movieMean = (double) movieGenreIds.size() / 19;
+        // 전체 19개 장르에 대해 순회하며 데이터 설정
+        for (int genreId = 1; genreId <= 19; genreId++) {
+            String genreIdStr = String.valueOf(genreId);
+            VectorValueDto vectorValue = memberGenreVector.get(genreIdStr);
+            double score = (vectorValue != null) ? vectorValue.getScore() : 0.0;
+            normalizedMemberVector.put(genreIdStr, score);
+            memberSum += score;
+        }
+
+        // 3. 평균 계산 (전체 19개 장르로 나눔)
+        double memberMean = memberSum / 19.0;
+        log.info("%%% 평균 선호도 {} : {}", "Member", memberMean);
+
+        // 영화 장르 평균도 전체 19개 기준으로 계산
+        double movieSum = 0.0;
+        for (int genreId = 1; genreId <= 19; genreId++) {
+            String genreIdStr = String.valueOf(genreId);
+            movieSum += movieGenreWeights.getOrDefault(genreIdStr, 0.0);
+        }
+        double movieMean = movieSum / 19.0;
+        log.info("%%% 평균 선호도 {} : {}", "Movie", movieMean);
 
         // 4. 피어슨 상관계수 계산
         double numerator = 0.0;
         double memberDenominator = 0.0;
         double movieDenominator = 0.0;
 
-        // 전체 장르 ID에 대해 계산
-        for (String genreId : userGenreVector.keySet()) {
-            // 사용자의 해당 장르 선호도 - 평균
-            double userScore = userGenreVector.get(genreId).getScore() - userMean;
-            // 영화의 해당 장르 포함 여부(1 or 0) - 평균
-            double movieScore = (movieGenreIds.contains(genreId) ? 1.0 : 0.0) - movieMean;
+        for (int genreId = 1; genreId <= 19; genreId++) {
+            String genreIdStr = String.valueOf(genreId);
 
-            numerator += userScore * movieScore;
-            memberDenominator += userScore * userScore;
+            // 사용자의 해당 장르 선호도 - 평균
+            double memberScore = normalizedMemberVector.get(genreIdStr) - memberMean;
+
+            // 영화의 해당 장르 가중치 - 평균
+            double movieScore = movieGenreWeights.getOrDefault(genreIdStr, 0.0) - movieMean;
+
+            numerator += memberScore * movieScore;
+            memberDenominator += memberScore * memberScore;
             movieDenominator += movieScore * movieScore;
         }
 
@@ -209,15 +264,15 @@ public class MovieRecommendationService {
         return (numerator / Math.sqrt(memberDenominator * movieDenominator) + 1) / 2;
     }
 
-    private double calculateActorSimilarity(Movie movie, Map<String, VectorValueDto> userActorVector) {
+    private double calculateActorSimilarity(Movie movie, Map<String, VectorValueDto> memberActorVector) {
         // 유저의 선호 배우가 없으면
-        if (userActorVector.isEmpty()) {
+        if (memberActorVector.isEmpty()) {
             return 0.0;
         }
 
         // 1. 유저의 선호 배우 상위 N명 추출
         final int TOP_ACTORS = 20;  // 상위 20명만 고려
-        Set<String> topActorIds = userActorVector.entrySet().stream()
+        Set<String> topActorIds = memberActorVector.entrySet().stream()
                 .sorted(Map.Entry.<String, VectorValueDto>comparingByValue(
                         Comparator.comparingDouble(VectorValueDto::getScore)).reversed()
                 )
@@ -239,14 +294,14 @@ public class MovieRecommendationService {
         return Math.min(commonActors * 0.2, 1.0);  // 최대 1.0
     }
 
-    private double calculateDirectorSimilarity(Movie movie, Map<String, VectorValueDto> userDirectorVector) {
-        if (userDirectorVector.isEmpty()) {
+    private double calculateDirectorSimilarity(Movie movie, Map<String, VectorValueDto> memberDirectorVector) {
+        if (memberDirectorVector.isEmpty()) {
             return 0.0;
         }
 
         // 1. 유저의 선호 감독 상위 10명 추출
         final int TOP_DIRECTORS = 10;
-        Set<String> topDirectorIds = userDirectorVector.entrySet().stream()
+        Set<String> topDirectorIds = memberDirectorVector.entrySet().stream()
                 .sorted(Map.Entry.<String, VectorValueDto>comparingByValue(
                         Comparator.comparingDouble(VectorValueDto::getScore)).reversed()
                 )
@@ -309,6 +364,10 @@ public class MovieRecommendationService {
         combined.addAll(topSimilarityScores);
         combined.addAll(topPopularityScores);
         combined.sort(Comparator.comparingDouble(MovieScoreDto::getFinalScore).reversed());
+
+        combined.forEach(movie -> {
+                    log.info("####### {} 추천 점수({}) : {}", movie.getMovieId(), movie.isFromSimilarity(), movie.getFinalScore());
+                });
 
         return combined.stream()
                 .map(MovieScoreDto::getMovieId).distinct().collect(Collectors.toList());

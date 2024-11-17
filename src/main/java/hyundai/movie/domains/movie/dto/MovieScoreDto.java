@@ -13,7 +13,7 @@ public class MovieScoreDto {
     private boolean isFromSimilarity;
 
     public double getFinalScore() {
-        return isFromSimilarity ? score * 1.2 : score;
+        return isFromSimilarity ? score * 2.0 : score;
     }
 
     public static MovieScoreDto createFromSimilarity(Long movieId, double score) {
