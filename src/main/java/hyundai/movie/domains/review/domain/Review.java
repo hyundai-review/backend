@@ -5,6 +5,7 @@ import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,8 +43,12 @@ public class Review extends BaseTimeEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReviewLike> likes;
 
     private String photocard;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
     private Integer rating;
     private Boolean isSpoil;

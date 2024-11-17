@@ -3,6 +3,7 @@ package hyundai.movie.domains.review.repository;
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.movie.domain.Movie;
 import hyundai.movie.domains.review.domain.Review;
+import hyundai.movie.domains.review.dto.RecentReviewDto;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.movie = :movie AND r.member <> :member")
     Slice<Review> findAllReviewsExceptMember(@Param("movie") Movie movie, @Param("member") Member member, Pageable pageable);
 
+    // 나의 리뷰
+    Slice<Review> findByMemberId(Long memberId, Pageable pageable);
+    int countByMemberId(Long memberId);
+
+    // 최근 10개
+    List<Review> findTop10ByOrderByCreatedAtDesc();
+
+    // 평점 평균 계산
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId")
+    Double getAverageRatingByMovieId(@Param("movieId") Long movieId);
 
 
     boolean existsByMovieAndMember(Movie movie, Member member);

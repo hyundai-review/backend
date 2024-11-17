@@ -3,7 +3,9 @@ package hyundai.movie.domains.review.api;
 import hyundai.movie.domains.review.api.request.PhotoReviewCreateRequest;
 import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
+import hyundai.movie.domains.review.api.response.MyReviewListResponse;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.RecentReviewResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
 import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
 import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
@@ -27,12 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
 public class ReviewController {
+
     private final ReviewService reviewService;
 
     @Valid
     @PostMapping("/{movieId}")
-    public ResponseEntity<TextReviewCreateResponse> createReview(
-            @PathVariable Long movieId,
+    public ResponseEntity<TextReviewCreateResponse> createReview(@PathVariable Long movieId,
             @Valid @RequestBody TextReviewCreateRequest request) {
         TextReviewCreateResponse response = reviewService.createReview(movieId, request);
         return ResponseEntity.ok(response);
@@ -40,15 +42,14 @@ public class ReviewController {
 
     @Valid
     @PostMapping(value = "/photo/{movieId}", consumes = "multipart/form-data")
-    public ResponseEntity<PhotoReviewCreateResponse> createPhotoReview(
-            @PathVariable Long movieId,
-            @RequestParam("rating") Integer rating,
-            @RequestParam("content") String content,
+    public ResponseEntity<PhotoReviewCreateResponse> createPhotoReview(@PathVariable Long movieId,
+            @RequestParam("rating") Integer rating, @RequestParam("content") String content,
             @RequestParam("isSpoil") Boolean isSpoil,
             @RequestParam("photocard") MultipartFile photocard) {
 
         // PhotoReviewCreateRequest DTO 생성
-        PhotoReviewCreateRequest request = new PhotoReviewCreateRequest(rating, content, isSpoil, photocard);
+        PhotoReviewCreateRequest request = new PhotoReviewCreateRequest(rating, content, isSpoil,
+                photocard);
 
         // 리뷰 생성 요청 처리
         PhotoReviewCreateResponse response = reviewService.createPhotoReview(movieId, request);
@@ -57,10 +58,8 @@ public class ReviewController {
 
     // 특정 영화의 전체 리뷰 조회
     @GetMapping("/{movieId}")
-    public ResponseEntity<ReviewListResponse> getReviewsByMovie(
-            @PathVariable Long movieId,
-            @RequestParam int page,
-            @RequestParam int size,
+    public ResponseEntity<ReviewListResponse> getReviewsByMovie(@PathVariable Long movieId,
+            @RequestParam int page, @RequestParam int size,
             @RequestParam(required = false, defaultValue = "createdAt") String sort) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ReviewListResponse response = reviewService.getReviewsByMovie(movieId, pageRequest);
@@ -69,8 +68,7 @@ public class ReviewController {
 
     // 리뷰 수정
     @PutMapping("/{reviewId}")
-    public ResponseEntity<ReviewUpdateResponse> updateReview(
-            @PathVariable Long reviewId,
+    public ResponseEntity<ReviewUpdateResponse> updateReview(@PathVariable Long reviewId,
             @Valid @RequestBody ReviewUpdateRequest request) {
         ReviewUpdateResponse response = reviewService.updateReview(reviewId, request);
         return ResponseEntity.ok(response);
@@ -83,7 +81,31 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
+    // 나의 리뷰 조회
+    @GetMapping("/my")
+    public ResponseEntity<MyReviewListResponse> getMyReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        MyReviewListResponse response = reviewService.getMyReviews(pageRequest);
 
+        return ResponseEntity.ok(response);
+    }
 
+    // 최근 리뷰 10개
+    @GetMapping("/recents")
+    public ResponseEntity<RecentReviewResponse> getRecentReviews() {
+        RecentReviewResponse response = reviewService.getRecentReviews();
+        return ResponseEntity.ok(response);
+    }
 
+    @PostMapping("/{reviewId}/like")
+    public ResponseEntity<?> toggleReviewLike(@PathVariable(name = "reviewId") Long reviewId) {
+        return ResponseEntity.ok(reviewService.toggleReviewLike(reviewId));
+    }
+
+    @GetMapping("/{reviewId}/like")
+    public ResponseEntity<?> getReviewLike(@PathVariable(name = "reviewId") Long reviewId) {
+        return ResponseEntity.ok(reviewService.getReviewLike(reviewId));
+    }
 }

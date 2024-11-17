@@ -14,10 +14,15 @@ public class ReviewListResponse {
     private final MyReviewDto myReview;
     private final List<ReviewDto> otherReviewList;
     private final SliceInfoDto pageable;
+    private final long totalReviews;
+    private final double averageRating;
 
-    public ReviewListResponse( MyReviewDto myReview, List<ReviewDto> otherReviewList, Slice<Review> reviewSlice, int totalPages) {
+    public ReviewListResponse( MyReviewDto myReview, List<ReviewDto> otherReviewList, Slice<Review> reviewSlice, int totalPages,
+            int totalReviews, double averageRating) {
         this.myReview = myReview;
         this.otherReviewList = otherReviewList;
         this.pageable = new SliceInfoDto(reviewSlice, totalPages);
+        this.totalReviews = totalReviews;
+        this.averageRating = averageRating;
     }
 }

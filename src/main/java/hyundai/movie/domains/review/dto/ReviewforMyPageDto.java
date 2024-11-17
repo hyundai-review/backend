@@ -4,16 +4,21 @@ import hyundai.movie.domains.review.domain.Review;
 import lombok.Getter;
 
 @Getter
-public class MyReviewDto {
+public class ReviewforMyPageDto {
+    private final Long movieId;
+    private final String movieTitle;
     private final Long reviewId;
     private final Integer rating;
     private final String content;
     private final String photocard;
-     private Integer totalComments;
+    private final int totalComments;
     private final String createdAt;
     private final String updatedAt;
 
-    private MyReviewDto(Long reviewId, Integer rating, String content, String photocard, Integer totalComments, String createdAt, String updatedAt) {
+    private ReviewforMyPageDto(Long movieId, String movieTitle, Long reviewId, Integer rating, String content,
+            String photocard, int totalComments, String createdAt, String updatedAt) {
+        this.movieId = movieId;
+        this.movieTitle = movieTitle;
         this.reviewId = reviewId;
         this.rating = rating;
         this.content = content;
@@ -23,9 +28,11 @@ public class MyReviewDto {
         this.updatedAt = updatedAt;
     }
 
-    public static MyReviewDto from(Review review, int totalComments) {
-
-        return new MyReviewDto(
+    // 정팩메 ㅋㅋ
+    public static ReviewforMyPageDto from(Review review, int totalComments) {
+        return new ReviewforMyPageDto(
+                review.getMovie().getId(),
+                review.getMovie().getTitle(),
                 review.getId(),
                 review.getRating(),
                 review.getContent(),
