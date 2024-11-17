@@ -24,7 +24,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,74 @@ public class MovieFetchService {
     private final DirectorRepository directorRepository;
     private final GenreRepository genreRepository;
     private Set<Long> nowPlayingMovieIds = new HashSet<>();
+
+    @Transactional
+    public void fetchAllMovies(int startYear, int startMonth, int endYear, int endMonth) {
+        LocalDate currentDate = LocalDate.of(startYear, startMonth, 1);
+        LocalDate endDate = LocalDate.of(endYear, endMonth, 1);
+
+        while (!currentDate.isAfter(endDate)) {
+            try {
+                List<Movie> movies = fetchMoviesByYearMonth(
+                        currentDate.getYear(),
+                        currentDate.getMonthValue()
+                );
+                log.info("Fetched {} movies for {}-{}",
+                        movies.size(),
+                        currentDate.getYear(),
+                        currentDate.getMonthValue());
+
+                // Thread.sleep 대신 TimeUnit 사용
+                TimeUnit.MILLISECONDS.sleep(100);
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 인터럽트 상태 복원
+                log.error("Thread was interrupted", e);
+                break;
+            } catch (Exception e) {
+                log.error("Error processing {}-{}: {}",
+                        currentDate.getYear(),
+                        currentDate.getMonthValue(),
+                        e.getMessage());
+            }
+
+            currentDate = currentDate.plusMonths(1);
+        }
+    }
+
+    @Transactional
+    public List<Movie> fetchMoviesByYearMonth(int year, int month) {
+        // 시작일과 종료일 설정
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        // TMDB API 호출하여 해당 월의 영화 목록 가져오기 (인기도순)
+        List<TmdbMovieDto> movies = tmdbApiClient.getMoviesByReleaseDate(
+                startDate.toString(),  // yyyy-MM-dd 형식
+                endDate.toString(),
+                1  // 첫 페이지 (20개)
+        );
+
+        log.info("Found {} movies for {}-{}", movies.size(), year, month);
+
+        // 영화 정보 저장
+        return movies.stream()
+                .filter(movieDto -> !movieRepository.existsByTmdbId(movieDto.getId()))  // 이미 존재하는 영화 필터링
+                .map(movieDto -> {
+                    try {
+                        TmdbMovieDto detailedMovie = tmdbApiClient.getMovie(movieDto.getId());
+                        log.info("Fetching detailed info for movie: {} ({})",
+                                detailedMovie.getTitle(),
+                                detailedMovie.getReleaseDate());
+                        return fetchMovie(detailedMovie);
+                    } catch (Exception e) {
+                        log.error("Error fetching movie {}: {}", movieDto.getId(), e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)  // 에러 발생한 영화 필터링
+                .collect(Collectors.toList());
+    }
 
     public Movie fetchMovieById(Long tmdbId) {
         collectNowPlayingMovies();
