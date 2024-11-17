@@ -49,4 +49,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "WHERE m.id IN :ids " +
             "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId)")
     List<Movie> findByIdIn(@Param("ids") List<Long> ids, @Param("memberId") Long memberId);
+
+    boolean existsByTmdbId(Long id);
 }

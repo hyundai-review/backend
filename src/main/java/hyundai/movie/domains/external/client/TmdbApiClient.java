@@ -148,4 +148,23 @@ public class TmdbApiClient {
                 .bodyToMono(TmdbImageListDto.class)
                 .block();
     }
+
+    public List<TmdbMovieDto> getMoviesByReleaseDate(String startDate, String endDate, int page) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/discover/movie")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", "ko-KR")
+                        .queryParam("region", "KR")
+                        .queryParam("primary_release_date.gte", startDate)
+                        .queryParam("primary_release_date.lte", endDate)
+                        .queryParam("sort_by", "popularity.desc")
+                        .queryParam("page", page)
+                        .queryParam("with_release_type", 3)
+                        .build())
+                .retrieve()
+                .bodyToMono(TmdbMovieListDto.class)
+                .map(TmdbMovieListDto::getResults)
+                .block();
+    }
 }
