@@ -12,6 +12,7 @@ import hyundai.movie.domains.review.api.request.ReviewUpdateRequest;
 import hyundai.movie.domains.review.api.request.TextReviewCreateRequest;
 import hyundai.movie.domains.review.api.response.MyReviewListResponse;
 import hyundai.movie.domains.review.api.response.PhotoReviewCreateResponse;
+import hyundai.movie.domains.review.api.response.RecentReviewResponse;
 import hyundai.movie.domains.review.api.response.ReviewLikeResponse;
 import hyundai.movie.domains.review.api.response.ReviewListResponse;
 import hyundai.movie.domains.review.api.response.ReviewUpdateResponse;
@@ -19,6 +20,7 @@ import hyundai.movie.domains.review.api.response.TextReviewCreateResponse;
 import hyundai.movie.domains.review.domain.Review;
 import hyundai.movie.domains.review.domain.ReviewLike;
 import hyundai.movie.domains.review.dto.MyReviewDto;
+import hyundai.movie.domains.review.dto.RecentReviewDto;
 import hyundai.movie.domains.review.dto.ReviewDto;
 import hyundai.movie.domains.review.dto.ReviewforMyPageDto;
 import hyundai.movie.domains.review.exception.DuplicateReviewException;
@@ -230,6 +232,23 @@ public class ReviewService {
         });
 
         return new MyReviewListResponse(dtoSlice, totalPages);
+    }
+
+    // 최신 리뷰 10개
+    public RecentReviewResponse getRecentReviews() {
+        // 최신 10개의 리뷰 가져오기
+        List<Review> reviews = reviewRepository.findTop10ByOrderByCreatedAtDesc();
+
+        // Review를 RecentReviewDto로 변환
+        List<RecentReviewDto> recentReviews = reviews.stream()
+                .map(review -> new RecentReviewDto(
+                        review.getId(),
+                        review.getPhotocard()
+                ))
+                .collect(Collectors.toList());
+
+        // RecentReviewResponse 생성 및 반환
+        return new RecentReviewResponse(recentReviews);
     }
 
     @Transactional
