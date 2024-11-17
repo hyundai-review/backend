@@ -263,8 +263,8 @@ public class MovieRecommendationService {
     }
 
     private double calculateActorSimilarity(Movie movie, Map<String, VectorValueDto> memberActorVector) {
-        // 유저의 선호 배우가 없으면
-        if (memberActorVector.isEmpty()) {
+        // 기본 검증
+        if (memberActorVector.isEmpty() || movie.getMovieActors() == null || movie.getMovieActors().isEmpty()) {
             return 0.0;
         }
 
@@ -280,7 +280,7 @@ public class MovieRecommendationService {
 
         // 2. 영화의 배우 ID들
         Set<String> movieActorIds = movie.getMovieActors().stream()
-                .map(ma -> ma.getId().toString())
+                .map(ma -> ma.getActor().getId().toString())  // Actor 엔티티의 ID를 가져오도록 수정
                 .collect(Collectors.toSet());
 
         // 3. 교집합 크기 계산 (겹치는 배우 수)
@@ -293,7 +293,8 @@ public class MovieRecommendationService {
     }
 
     private double calculateDirectorSimilarity(Movie movie, Map<String, VectorValueDto> memberDirectorVector) {
-        if (memberDirectorVector.isEmpty()) {
+        // 기본 검증
+        if (memberDirectorVector.isEmpty() || movie.getMovieDirectors() == null || movie.getMovieDirectors().isEmpty()) {
             return 0.0;
         }
 
@@ -308,7 +309,7 @@ public class MovieRecommendationService {
                 .collect(Collectors.toSet());
 
         // 2. 영화의 감독 ID
-        String movieDirectorId = movie.getMovieDirectors().get(0).getId().toString();
+        String movieDirectorId = movie.getMovieDirectors().get(0).getDirector().getId().toString();
 
         // 3. 선호 감독 10명 안에 포함되면 1, 아니면 0
         return topDirectorIds.contains(movieDirectorId) ? 1.0 : 0.0;
