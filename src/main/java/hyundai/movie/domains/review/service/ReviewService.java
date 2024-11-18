@@ -166,7 +166,8 @@ public class ReviewService {
         Optional<Review> myReviewOpt = reviewRepository.findByMovieAndMember(movie, member);
         MyReviewDto myReview = myReviewOpt.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            return MyReviewDto.from(review, totalComments);
+            boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
+            return MyReviewDto.from(review, totalComments, isLike);
         }).orElse(null);
 
         // 전체 리뷰 조회 (본인 제외) + totalComments
@@ -177,7 +178,8 @@ public class ReviewService {
         List<ReviewDto> otherReviewList = reviewSlice.getContent().stream()
                 .map(review -> {
                     int totalComments = commentRepository.countByReview(review);
-                    return ReviewDto.from(review, false, totalComments);
+                    boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
+                    return ReviewDto.from(review, isLike, totalComments);
                 })
                 .collect(Collectors.toList());
 
@@ -267,13 +269,18 @@ public class ReviewService {
         int totalElements = reviewRepository.countByMemberId(member.getId());
         int totalPages = (int) Math.ceil((double) totalElements / pageRequest.getPageSize());
 
+        // 사용자(본인)이 작성한 전체 리뷰 수
+        int totalReviews = reviewRepository.countByMemberId(member.getId());
+
+
         // DTO 매핑
         Slice<ReviewforMyPageDto> dtoSlice = reviewSlice.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            return ReviewforMyPageDto.from(review, totalComments);
+            boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member); // 좋아요 여부 확인
+            return ReviewforMyPageDto.from(review, totalComments, isLike);
         });
 
-        return new MyReviewListResponse(dtoSlice, totalPages);
+        return new MyReviewListResponse(dtoSlice, totalPages, totalReviews);
     }
 
     // 최신 리뷰 10개
