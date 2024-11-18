@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class RecentReviewDto {
-    private final Long reveiwId;
+    private final Long reviewId;
     private final String photocard;
 
     public RecentReviewDto(Long reveiwId, String photocard) {
-        this.reveiwId = reveiwId;
+        this.reviewId = reveiwId;
         this.photocard = photocard;
     }
 }
