@@ -2,6 +2,7 @@ package hyundai.movie.helper;
 
 import hyundai.movie.domains.member.domain.Member;
 import hyundai.movie.domains.member.dto.KakaoMemberResponseDto;
+import hyundai.movie.domains.member.dto.KakaoTokenResponseDto;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class MemberTestHelper {
@@ -38,6 +39,14 @@ public class MemberTestHelper {
         Member member = createCustomMember(nickname, providerId, profile, isActive);
         ReflectionTestUtils.setField(member, "id", id);
         return member;
+    }
+
+    // KakaoTokenResponseDto 생성
+    public static KakaoTokenResponseDto createKakaoTokenResponseDto() {
+        KakaoTokenResponseDto dto = new KakaoTokenResponseDto();
+        ReflectionTestUtils.setField(dto, "accessToken", "test_access_token");
+
+        return dto;
     }
 
     // KakaoMemberResponseDto 생성
