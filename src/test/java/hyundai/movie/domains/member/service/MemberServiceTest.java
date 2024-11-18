@@ -17,6 +17,7 @@ import hyundai.movie.helper.MemberTestHelper;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -54,134 +55,159 @@ class MemberServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
     }
 
-    @Test
-    @DisplayName("새로운 회원 가입")
-    void loginOrRegister_NewMember() {
-        // given
-        KakaoMemberResponseDto kakaoInfo = MemberTestHelper.createKakaoMemberResponseDto();
-        Member expectedMember = MemberTestHelper.createMemberWithId(1L);
+    @Nested
+    @DisplayName("회원 가입/로그인 테스트")
+    class LoginOrRegisterTest {
 
-        when(memberRepository.findByProviderId(kakaoInfo.getId().toString())).thenReturn(Optional.empty());
-        when(memberRepository.save(any(Member.class))).thenReturn(expectedMember);
+        @Test
+        @DisplayName("새로운 회원 가입")
+        void loginOrRegister_NewMember() {
+            // given
+            KakaoMemberResponseDto kakaoInfo = MemberTestHelper.createKakaoMemberResponseDto();
+            Member expectedMember = MemberTestHelper.createMemberWithId(1L);
 
-        // when
-        Member result = memberService.loginOrRegister(kakaoInfo);
+            when(memberRepository.findByProviderId(kakaoInfo.getId().toString())).thenReturn(
+                    Optional.empty());
+            when(memberRepository.save(any(Member.class))).thenReturn(expectedMember);
 
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(expectedMember.getId());
-        verify(memberRepository).save(any(Member.class));
+            // when
+            Member result = memberService.loginOrRegister(kakaoInfo);
+
+            // then
+            assertThat(result).isNotNull();
+            assertThat(result.getId()).isEqualTo(expectedMember.getId());
+            verify(memberRepository).save(any(Member.class));
+        }
+
+        @Test
+        @DisplayName("기존 회원 로그인")
+        void loginOrRegister_ExistingMember() {
+            // given
+            KakaoMemberResponseDto kakaoInfo = MemberTestHelper.createKakaoMemberResponseDto();
+            Member existingMember = MemberTestHelper.createMemberWithId(1L);
+
+            when(memberRepository.findByProviderId(kakaoInfo.getId().toString()))
+                    .thenReturn(Optional.of(existingMember));
+
+            // when
+            Member result = memberService.loginOrRegister(kakaoInfo);
+
+            // then
+            assertThat(result).isNotNull();
+            assertThat(result.getId()).isEqualTo(existingMember.getId());
+        }
+
     }
 
-    @Test
-    @DisplayName("기존 회원 로그인")
-    void loginOrRegister_ExistingMember() {
-        // given
-        KakaoMemberResponseDto kakaoInfo = MemberTestHelper.createKakaoMemberResponseDto();
-        Member existingMember = MemberTestHelper.createMemberWithId(1L);
+    @Nested
+    @DisplayName("회원 정보 조회 테스트")
+    class GetMemberInfoTest {
 
-        when(memberRepository.findByProviderId(kakaoInfo.getId().toString()))
-                .thenReturn(Optional.of(existingMember));
+        @Test
+        @DisplayName("회원 정보 조회")
+        void getMemberInfo() {
+            // given
+            Long memberId = 1L;
+            hyundai.movie.domains.member.domain.Member member = MemberTestHelper.createMemberWithId(memberId);
 
-        // when
-        Member result = memberService.loginOrRegister(kakaoInfo);
+            when(authentication.getPrincipal()).thenReturn(memberId);
+            when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(existingMember.getId());
+            // when
+            MemberInfoResponse response = memberService.getMemberInfo();
+
+            // then
+            assertThat(response.getMemberId()).isEqualTo(memberId);
+            assertThat(response.getNickname()).isEqualTo(member.getNickname());
+            assertThat(response.getProfile()).isEqualTo(member.getProfile());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회원 조회 시 예외 발생")
+        void getMemberInfo_NotFound() {
+            // given
+            Long nonExistentMemberId = 999L;
+            when(authentication.getPrincipal()).thenReturn(nonExistentMemberId);
+            when(memberRepository.findById(nonExistentMemberId)).thenReturn(Optional.empty());
+
+            // when & then
+            assertThatThrownBy(() -> memberService.getMemberInfo())
+                    .isInstanceOf(MemberNotFoundException.class)
+                    .hasMessage("회원 정보를 찾을 수 없습니다.");
+        }
+
     }
 
-    @Test
-    @DisplayName("회원 정보 조회")
-    void getMemberInfo() {
-        // given
-        Long memberId = 1L;
-        Member member = MemberTestHelper.createMemberWithId(memberId);
+    @Nested
+    @DisplayName("유저 정보 업데이트 테스트")
+    class MemberInfoUpdateTest {
 
-        when(authentication.getPrincipal()).thenReturn(memberId);
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        @Test
+        @DisplayName("닉네임 업데이트")
+        void updateNickname() {
+            // given
+            Long memberId = 1L;
+            String newNickname = "새로운닉네임";
+            Member member = MemberTestHelper.createMemberWithId(memberId);
 
-        // when
-        MemberInfoResponse response = memberService.getMemberInfo();
+            when(authentication.getPrincipal()).thenReturn(memberId);
+            when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        // then
-        assertThat(response.getMemberId()).isEqualTo(memberId);
-        assertThat(response.getNickname()).isEqualTo(member.getNickname());
-        assertThat(response.getProfile()).isEqualTo(member.getProfile());
+            // when
+            NicknameUpdateResponse response = memberService.updateNickname(newNickname);
+
+            // then
+            assertThat(response.getMemberId()).isEqualTo(memberId);
+            assertThat(response.getNickname()).isEqualTo(newNickname);
+            verify(memberRepository).save(any(Member.class));
+        }
+
+        @Test
+        @DisplayName("프로필 이미지 업데이트")
+        void updateProfileImage() throws Exception {
+            // given
+            Long memberId = 1L;
+            Member member = MemberTestHelper.createMemberWithId(memberId);
+            String expectedImageUrl = "http://new-profile-image.jpg";
+            MockMultipartFile file = new MockMultipartFile(
+                    "file", "test.jpg", "image/jpeg", "test image content".getBytes()
+            );
+
+            when(authentication.getPrincipal()).thenReturn(memberId);
+            when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+            when(s3Service.uploadImage(any(), any())).thenReturn(expectedImageUrl);
+
+            // when
+            String result = memberService.updateProfileImage(file);
+
+            // then
+            assertThat(result).isEqualTo(expectedImageUrl);
+            verify(memberRepository).save(any(Member.class));
+        }
+
     }
 
-    @Test
-    @DisplayName("닉네임 업데이트")
-    void updateNickname() {
-        // given
-        Long memberId = 1L;
-        String newNickname = "새로운닉네임";
-        Member member = MemberTestHelper.createMemberWithId(memberId);
+    @Nested
+    @DisplayName("유저 정보 비활성/재활성 테스트")
+    class MemberActivationTest {
 
-        when(authentication.getPrincipal()).thenReturn(memberId);
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        @Test
+        @DisplayName("회원 탈퇴 처리")
+        void deactivateMember() {
+            // given
+            Long memberId = 1L;
+            Member member = MemberTestHelper.createMemberWithId(memberId);
 
-        // when
-        NicknameUpdateResponse response = memberService.updateNickname(newNickname);
+            when(authentication.getPrincipal()).thenReturn(memberId);
+            when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        // then
-        assertThat(response.getMemberId()).isEqualTo(memberId);
-        assertThat(response.getNickname()).isEqualTo(newNickname);
-        verify(memberRepository).save(any(Member.class));
-    }
+            // when
+            memberService.deactivateMember();
 
-    @Test
-    @DisplayName("프로필 이미지 업데이트")
-    void updateProfileImage() throws Exception {
-        // given
-        Long memberId = 1L;
-        Member member = MemberTestHelper.createMemberWithId(memberId);
-        String expectedImageUrl = "http://new-profile-image.jpg";
-        MockMultipartFile file = new MockMultipartFile(
-                "file", "test.jpg", "image/jpeg", "test image content".getBytes()
-        );
+            // then
+            assertThat(member.getIsActive()).isFalse();
+            verify(memberRepository).save(member);
+        }
 
-        when(authentication.getPrincipal()).thenReturn(memberId);
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(s3Service.uploadImage(any(), any())).thenReturn(expectedImageUrl);
-
-        // when
-        String result = memberService.updateProfileImage(file);
-
-        // then
-        assertThat(result).isEqualTo(expectedImageUrl);
-        verify(memberRepository).save(any(Member.class));
-    }
-
-    @Test
-    @DisplayName("회원 탈퇴 처리")
-    void deactivateMember() {
-        // given
-        Long memberId = 1L;
-        Member member = MemberTestHelper.createMemberWithId(memberId);
-
-        when(authentication.getPrincipal()).thenReturn(memberId);
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-
-        // when
-        memberService.deactivateMember();
-
-        // then
-        assertThat(member.getIsActive()).isFalse();
-        verify(memberRepository).save(member);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 회원 조회 시 예외 발생")
-    void getMemberInfo_NotFound() {
-        // given
-        Long nonExistentMemberId = 999L;
-        when(authentication.getPrincipal()).thenReturn(nonExistentMemberId);
-        when(memberRepository.findById(nonExistentMemberId)).thenReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> memberService.getMemberInfo())
-                .isInstanceOf(MemberNotFoundException.class)
-                .hasMessage("회원 정보를 찾을 수 없습니다.");
     }
 }
