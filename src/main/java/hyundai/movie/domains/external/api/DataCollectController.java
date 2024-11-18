@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController
-@RequestMapping(("/data-collect"))
+//@RestController
+//@RequestMapping(("/data-collect"))
 @RequiredArgsConstructor
 public class DataCollectController {
     private final MovieFetchService movieFetchService;
 
-    @GetMapping("/fetch-test")
+//    @GetMapping("/fetch-test")
     public ResponseEntity<String> fetchMoviesTest(
             @RequestParam Integer startY,
             @RequestParam Integer startM,

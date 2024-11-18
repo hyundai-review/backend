@@ -16,6 +16,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Optional<Movie> findByTmdbId(Long tmdbId);
 
+    boolean existsByTitleContaining(String keyword);
+
     @Query("SELECT m FROM Movie m WHERE m.title LIKE %:keyword%")
     Slice<Movie> searchByTitleContaining(@Param("keyword") String keyword, Pageable pageable);
 
