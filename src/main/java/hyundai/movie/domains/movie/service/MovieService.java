@@ -122,6 +122,7 @@ public class MovieService {
 
         if(fetch) {
             List<Movie> movieList = movieFetchService.fetchAllMoviesByName(keyword, "");
+            log.info("Fetch 영화 수: {}", movieList.size());
         }
 
         return movieRepository.searchByTitleContaining(keyword, pageable)
