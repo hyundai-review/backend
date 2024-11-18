@@ -118,9 +118,14 @@ public class MovieService {
     }
 
     @Transactional
-    public Slice<MovieItemResponse> searchMovies(String keyword, Boolean fetch, Pageable pageable) {
+    public Slice<MovieItemResponse> searchMovies(String keyword, Pageable pageable) {
+        return movieRepository.searchByTitleContaining(keyword, pageable)
+                .map(MovieItemResponse::from);
+    }
 
-        if(fetch) {
+    @Transactional
+    public Slice<MovieItemResponse> searchAndFetchMovies(String keyword, Pageable pageable) {
+        if(!movieRepository.existsByTitleContaining(keyword)) {
             List<Movie> movieList = movieFetchService.fetchAllMoviesByName(keyword, "");
             log.info("Fetch 영화 수: {}", movieList.size());
         }

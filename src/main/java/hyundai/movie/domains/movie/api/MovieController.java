@@ -40,14 +40,14 @@ public class MovieController {
     public ResponseEntity<Slice<MovieItemResponse>> searchMovies(
             @Valid @NotBlank @RequestParam String keyword,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(movieService.searchMovies(keyword, false, pageable));
+        return ResponseEntity.ok(movieService.searchMovies(keyword, pageable));
     }
 
     @GetMapping("/search/fetch")
     public ResponseEntity<Slice<MovieItemResponse>> searchAndFetchMovies(
             @Valid @NotBlank @RequestParam String keyword,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(movieService.searchMovies(keyword, true, pageable));
+        return ResponseEntity.ok(movieService.searchAndFetchMovies(keyword, pageable));
     }
 
     @GetMapping("/images/{movieId}")
