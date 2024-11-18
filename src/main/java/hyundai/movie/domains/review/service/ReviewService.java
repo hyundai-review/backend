@@ -167,8 +167,7 @@ public class ReviewService {
         Optional<Review> myReviewOpt = reviewRepository.findByMovieAndMember(movie, member);
         MyReviewDto myReview = myReviewOpt.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
-            return MyReviewDto.from(review, totalComments, isLike);
+            return MyReviewDto.of(review, totalComments, member.getId());
         }).orElse(null);
 
         // 전체 리뷰 조회 (본인 제외) + totalComments
@@ -179,8 +178,8 @@ public class ReviewService {
         List<ReviewDto> otherReviewList = reviewSlice.getContent().stream()
                 .map(review -> {
                     int totalComments = commentRepository.countByReview(review);
-                    boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
-                    return ReviewDto.from(review, isLike, totalComments);
+                    //boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
+                    return ReviewDto.from(review, member.getId(), totalComments);
                 })
                 .collect(Collectors.toList());
 
@@ -277,8 +276,7 @@ public class ReviewService {
         // DTO 매핑
         Slice<ReviewforMyPageDto> dtoSlice = reviewSlice.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member); // 좋아요 여부 확인
-            return ReviewforMyPageDto.from(review, totalComments, isLike);
+            return ReviewforMyPageDto.from(review, totalComments, member.getId());
         });
 
         return new MyReviewListResponse(dtoSlice, totalPages, totalReviews);

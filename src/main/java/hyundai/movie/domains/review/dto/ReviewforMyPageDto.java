@@ -1,6 +1,7 @@
 package hyundai.movie.domains.review.dto;
 
 import hyundai.movie.domains.review.domain.Review;
+import hyundai.movie.domains.review.domain.ReviewLike;
 import lombok.Getter;
 
 @Getter
@@ -33,7 +34,7 @@ public class ReviewforMyPageDto {
     }
 
     // 정팩메 ㅋㅋ
-    public static ReviewforMyPageDto from(Review review, int totalComments, boolean isLike) {
+    public static ReviewforMyPageDto from(Review review, int totalComments, Long memberId) {
         return new ReviewforMyPageDto(
                 review.getMovie().getId(),
                 review.getMovie().getTitle(),
@@ -43,7 +44,11 @@ public class ReviewforMyPageDto {
                 review.getIsSpoil(),
                 review.getPhotocard(),
                 totalComments,
-                isLike,
+                review.getLikes().stream()
+                        .filter(like -> like.getMember().getId().equals(memberId))
+                        .findFirst()
+                        .map(ReviewLike::getIsLike)
+                        .orElse(false),
                 review.getCreatedAt().toString(),
                 review.getUpdatedAt().toString()
         );
