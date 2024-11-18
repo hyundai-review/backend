@@ -290,15 +290,26 @@ public class ReviewService {
 
         // Review를 RecentReviewDto로 변환
         List<RecentReviewDto> recentReviews = reviews.stream()
-                .map(review -> new RecentReviewDto(
-                        review.getId(),
-                        review.getPhotocard()
-                ))
+                .map(review -> {
+                    // 댓글 수 계산
+                    int totalComments = commentRepository.countByReview(review);
+
+                    // RecentReviewDto 생성
+                    return new RecentReviewDto(
+                            review.getMovie().getId(),          // movieId
+                            review.getId(),                    // reviewId
+                            review.getRating(),                // rating
+                            totalComments,                     // totalComments
+                            review.getContent(),               // content
+                            review.getPhotocard()              // photocard
+                    );
+                })
                 .collect(Collectors.toList());
 
-        // RecentReviewResponse 생성 및 반환
+
         return new RecentReviewResponse(recentReviews);
     }
+
 
     @Transactional
     public ReviewLikeResponse toggleReviewLike(Long reviewId) {
