@@ -33,6 +33,7 @@ import hyundai.movie.domains.review.repository.ReviewRepository;
 import hyundai.movie.global.common.s3.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -285,20 +286,24 @@ public class ReviewService {
 
     // 최신 리뷰 10개
     public RecentReviewResponse getRecentReviews() {
-        // 최신 10개의 리뷰 가져오기
         List<Review> reviews = reviewRepository.findTop10ByPhotocardIsNotNullOrderByCreatedAtDesc();
 
-        // Review를 RecentReviewDto로 변환
+        if (reviews.isEmpty()) {
+            return new RecentReviewResponse(Collections.emptyList());
+        }
+
         List<RecentReviewDto> recentReviews = reviews.stream()
-                .map(review -> new RecentReviewDto(
-                        review.getId(),
-                        review.getPhotocard()
-                ))
+                .map(review -> {
+                    int totalComments = commentRepository.countByReview(review);
+                    return RecentReviewDto.from(review, totalComments);
+                })
                 .collect(Collectors.toList());
 
-        // RecentReviewResponse 생성 및 반환
         return new RecentReviewResponse(recentReviews);
     }
+
+
+
 
     @Transactional
     public ReviewLikeResponse toggleReviewLike(Long reviewId) {
