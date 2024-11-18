@@ -85,11 +85,14 @@ public class CommentService {
     // 답글 조회
     @Transactional
     public CommentListResponse getCommentsByReviewId(Long reviewId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = (Long) authentication.getPrincipal();
+
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException("ID가 " + reviewId + "인 리뷰를 찾을 수 없습니다."));
 
         List<CommentDto> comments = commentRepository.findByReview(review).stream()
-                .map(CommentDto::from)
+                .map(comment -> CommentDto.of(comment, memberId))
                 .collect(Collectors.toList());
 
         return new CommentListResponse(comments);
