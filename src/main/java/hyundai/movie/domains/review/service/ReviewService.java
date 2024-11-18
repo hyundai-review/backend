@@ -279,7 +279,7 @@ public class ReviewService {
     // 최신 리뷰 10개
     public RecentReviewResponse getRecentReviews() {
         // 최신 10개의 리뷰 가져오기
-        List<Review> reviews = reviewRepository.findTop10ByOrderByCreatedAtDesc();
+        List<Review> reviews = reviewRepository.findTop10ByPhotocardIsNotNullOrderByCreatedAtDesc();
 
         // Review를 RecentReviewDto로 변환
         List<RecentReviewDto> recentReviews = reviews.stream()
