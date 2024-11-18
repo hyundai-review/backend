@@ -10,10 +10,12 @@ import org.springframework.data.domain.Slice;
 public class MyReviewListResponse {
     private final List<ReviewforMyPageDto> contents;
     private final SliceInfoDto pageable;
+    private final int totalReviews;
 
-    public MyReviewListResponse(Slice<ReviewforMyPageDto> reviewSlice, int totalPages) {
+    public MyReviewListResponse(Slice<ReviewforMyPageDto> reviewSlice, int totalPages, int totalReviews) {
         this.contents = reviewSlice.getContent();
         this.pageable = new SliceInfoDto(reviewSlice, totalPages);
+        this.totalReviews = totalReviews;
     }
 
 }

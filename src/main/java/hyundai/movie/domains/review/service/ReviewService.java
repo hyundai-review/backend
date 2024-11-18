@@ -33,6 +33,7 @@ import hyundai.movie.domains.review.repository.ReviewRepository;
 import hyundai.movie.global.common.s3.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -166,7 +167,7 @@ public class ReviewService {
         Optional<Review> myReviewOpt = reviewRepository.findByMovieAndMember(movie, member);
         MyReviewDto myReview = myReviewOpt.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            return MyReviewDto.from(review, totalComments);
+            return MyReviewDto.of(review, totalComments, member.getId());
         }).orElse(null);
 
         // 전체 리뷰 조회 (본인 제외) + totalComments
@@ -177,7 +178,8 @@ public class ReviewService {
         List<ReviewDto> otherReviewList = reviewSlice.getContent().stream()
                 .map(review -> {
                     int totalComments = commentRepository.countByReview(review);
-                    return ReviewDto.from(review, false, totalComments);
+                    //boolean isLike = reviewLikeRepository.existsByReviewAndMember(review, member);
+                    return ReviewDto.from(review, member.getId(), totalComments);
                 })
                 .collect(Collectors.toList());
 
@@ -267,31 +269,39 @@ public class ReviewService {
         int totalElements = reviewRepository.countByMemberId(member.getId());
         int totalPages = (int) Math.ceil((double) totalElements / pageRequest.getPageSize());
 
+        // 사용자(본인)이 작성한 전체 리뷰 수
+        int totalReviews = reviewRepository.countByMemberId(member.getId());
+
+
         // DTO 매핑
         Slice<ReviewforMyPageDto> dtoSlice = reviewSlice.map(review -> {
             int totalComments = commentRepository.countByReview(review);
-            return ReviewforMyPageDto.from(review, totalComments);
+            return ReviewforMyPageDto.from(review, totalComments, member.getId());
         });
 
-        return new MyReviewListResponse(dtoSlice, totalPages);
+        return new MyReviewListResponse(dtoSlice, totalPages, totalReviews);
     }
 
     // 최신 리뷰 10개
     public RecentReviewResponse getRecentReviews() {
-        // 최신 10개의 리뷰 가져오기
         List<Review> reviews = reviewRepository.findTop10ByPhotocardIsNotNullOrderByCreatedAtDesc();
 
-        // Review를 RecentReviewDto로 변환
+        if (reviews.isEmpty()) {
+            return new RecentReviewResponse(Collections.emptyList());
+        }
+
         List<RecentReviewDto> recentReviews = reviews.stream()
-                .map(review -> new RecentReviewDto(
-                        review.getId(),
-                        review.getPhotocard()
-                ))
+                .map(review -> {
+                    int totalComments = commentRepository.countByReview(review);
+                    return RecentReviewDto.from(review, totalComments);
+                })
                 .collect(Collectors.toList());
 
-        // RecentReviewResponse 생성 및 반환
         return new RecentReviewResponse(recentReviews);
     }
+
+
+
 
     @Transactional
     public ReviewLikeResponse toggleReviewLike(Long reviewId) {
