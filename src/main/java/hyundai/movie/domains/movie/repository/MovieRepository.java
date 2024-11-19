@@ -27,16 +27,15 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "ORDER BY m.voteAvg")
     Slice<Movie> findMoviesByVoteAvg(@Param("memberId") Long memberId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"movieGenres", "movieGenres.genre", "images"})
     @Query("SELECT DISTINCT m FROM Movie m " +
-            "JOIN m.movieGenres mg " +
-            "JOIN m.images i " +
-            "WHERE mg.genre.id = :genreId " +
-            "AND i.isPoster = true " +
-            "AND i.filePath IS NOT NULL " +
-            "AND m.certification IS NOT NULL " +
-            "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
-            "ORDER BY m.popularity, m.voteAvg")
+       "JOIN FETCH m.images i " +
+       "JOIN m.movieGenres mg " +
+       "WHERE mg.genre.id = :genreId " +
+       "AND i.isPoster = true " +
+       "AND i.filePath IS NOT NULL " +
+       "AND m.certification IS NOT NULL " +
+       "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
+       "ORDER BY m.popularity, m.voteAvg")
     Slice<Movie> findMoviesByGenreAndPopularity(
             @Param("genreId") Long genreId,
             @Param("memberId") Long memberId,
