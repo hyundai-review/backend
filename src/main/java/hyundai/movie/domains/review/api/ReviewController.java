@@ -45,8 +45,8 @@ public class ReviewController {
     @Valid
     @PostMapping(value = "/photo/{movieId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PhotoReviewCreateResponse> createPhotoReview(@PathVariable Long movieId,
-            @RequestParam("rating") Integer rating, @RequestParam("content") String content,
-            @RequestParam("isSpoil") Boolean isSpoil,
+            @RequestPart("rating") Integer rating, @RequestPart("content") String content,
+            @RequestPart("isSpoil") Boolean isSpoil,
             @RequestPart("photocard") MultipartFile photocard) {
 
         // PhotoReviewCreateRequest DTO 생성
