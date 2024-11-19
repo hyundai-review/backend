@@ -140,7 +140,7 @@ public class MovieService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         String date;
-        if (now.getHour() >= 9) {
+        if (now.getHour() >= 10) {
             date = now.minusDays(1).format(formatter);
         } else {
             date = now.minusDays(2).format(formatter);
