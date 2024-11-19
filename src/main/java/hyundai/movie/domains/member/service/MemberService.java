@@ -28,7 +28,6 @@ public class MemberService {
     private final S3Service s3Service;
 
     public Member loginOrRegister(KakaoMemberResponseDto kakaoMemberInfo) {
-        // providerId로 기존 회원을 찾음
         // providerId로 기존 회원 조회
         return memberRepository.findByProviderId(kakaoMemberInfo.getId().toString())
                 .map(existingMember -> {
@@ -103,6 +102,17 @@ public class MemberService {
 
     @CheckActiveUser
     public String updateProfileImage(MultipartFile file) {
+        // 파일 유효성 검사 수행
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 파일이 비어있습니다.");
+        }
+
+        // 파일 타입 검사
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = (Long) authentication.getPrincipal();
 
