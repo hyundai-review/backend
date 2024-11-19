@@ -30,8 +30,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "JOIN MovieGenre mg ON m.id = mg.movie.id " +
             "WHERE mg.genre.id = :genreId " +
             "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
-            "ORDER BY m.voteAvg")
-    Slice<Movie> findMoviesByGenreAndVoteAvg(@Param("genreId") Long genreId, @Param("memberId") Long memberId, Pageable pageable);
+            "ORDER BY m.popularity")
+    Slice<Movie> findMoviesByGenreAndPopularity(@Param("genreId") Long genreId, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT DISTINCT m FROM Movie m " +
             "JOIN m.movieGenres mg " +

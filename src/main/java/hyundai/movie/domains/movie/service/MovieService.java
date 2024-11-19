@@ -112,7 +112,7 @@ public class MovieService {
                         .map(MovieItemResponse::from);
             }
         } else {
-            return movieRepository.findMoviesByGenreAndVoteAvg(152 + genreId, memberId, pageable)
+            return movieRepository.findMoviesByGenreAndPopularity(152 + genreId, memberId, pageable)
                     .map(MovieItemResponse::from);
         }
     }
