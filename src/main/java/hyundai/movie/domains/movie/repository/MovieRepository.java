@@ -26,6 +26,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "WHERE i.isPoster = true " +
             "AND i.filePath IS NOT NULL " +
             "AND m.certification IS NOT NULL " +
+            "AND m.certification NOT LIKE '%19%' " +
             "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
             "ORDER BY m.voteAvg")
     Slice<Movie> findMoviesByVoteAvg(@Param("memberId") Long memberId, Pageable pageable);
@@ -37,6 +38,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
        "AND i.isPoster = true " +
        "AND i.filePath IS NOT NULL " +
        "AND m.certification IS NOT NULL " +
+       "AND m.certification NOT LIKE '%19%' " +
        "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
        "ORDER BY m.popularity, m.voteAvg")
     Slice<Movie> findMoviesByGenreAndPopularity(
