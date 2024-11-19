@@ -56,7 +56,7 @@ public class CommentService {
         Long memberId = (Long) authentication.getPrincipal();
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ReviewNotFoundException("ID가 " + commentId + "인 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("ID가 " + commentId + "인 댓글을 찾을 수 없습니다."));
 
         if (!comment.getMember().getId().equals(memberId)) {
             throw new IllegalArgumentException("본인만 댓글을 수정할 수 있습니다.");
