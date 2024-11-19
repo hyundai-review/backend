@@ -164,11 +164,11 @@ public class MovieTestHelper {
         Movie movie = createMovieWithId(movieId);
         Actor actor = createActorWithId(1L);
         Director director = createDirectorWithId(1L);
-        Genre genre = createGenreWithId(1L);
+        Genre genre = createGenreWithId(153L);
 
         MovieActor movieActor = createMovieActorWithId(1L, movie, actor);
         MovieDirector movieDirector = createMovieDirectorWithId(1L, movie, director);
-        MovieGenre movieGenre = createMovieGenreWithId(1L, movie, genre);
+        MovieGenre movieGenre = createMovieGenreWithId(153L, movie, genre);
         MovieImage movieImage = createMovieImageWithId(1L, movie);
 
         ReflectionTestUtils.setField(movie, "movieActors", List.of(movieActor));
