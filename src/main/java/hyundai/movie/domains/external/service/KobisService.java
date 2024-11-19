@@ -44,7 +44,7 @@ public class KobisService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
             String formattedDate;
-            if (now.getHour() >= 9) {
+            if (now.getHour() >= 10) {
                 formattedDate = now.minusDays(1).format(formatter);
             } else {
                 formattedDate = now.minusDays(2).format(formatter);
