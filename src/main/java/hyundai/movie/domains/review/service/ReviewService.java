@@ -110,7 +110,7 @@ public class ReviewService {
             throw new DuplicateReviewException("이미 이 영화에 대한 리뷰를 작성하셨습니다.");
         }
 
-        String photoCardUrl = uploadPhotoCard(request.getPhotocard(), member.getNickname());
+        String photoCardUrl = uploadPhotoCard(request.getPhotocard(), member.getId().toString());
 
         Review review = Review.builder().movie(movie).member(member).rating(request.getRating())
                 .content(request.getContent()).isSpoil(request.getIsSpoil()).photocard(photoCardUrl)

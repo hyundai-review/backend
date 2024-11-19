@@ -13,6 +13,7 @@ import hyundai.movie.domains.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,11 +43,11 @@ public class ReviewController {
     }
 
     @Valid
-    @PostMapping(value = "/photo/{movieId}", consumes = "multipart/form-data")
+    @PostMapping(value = "/photo/{movieId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PhotoReviewCreateResponse> createPhotoReview(@PathVariable Long movieId,
             @RequestParam("rating") Integer rating, @RequestParam("content") String content,
             @RequestParam("isSpoil") Boolean isSpoil,
-            @RequestParam("photocard") MultipartFile photocard) {
+            @RequestPart("photocard") MultipartFile photocard) {
 
         // PhotoReviewCreateRequest DTO 생성
         PhotoReviewCreateRequest request = new PhotoReviewCreateRequest(rating, content, isSpoil,
