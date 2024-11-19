@@ -26,12 +26,20 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "ORDER BY m.voteAvg")
     Slice<Movie> findMoviesByVoteAvg(@Param("memberId") Long memberId, Pageable pageable);
 
-    @Query("SELECT m FROM Movie m " +
-            "JOIN MovieGenre mg ON m.id = mg.movie.id " +
+    @Query("SELECT DISTINCT m FROM Movie m " +
+            "JOIN FETCH m.movieGenres mg " +
+            "JOIN FETCH m.images i " +
             "WHERE mg.genre.id = :genreId " +
+            "AND i.isPoster = true " +
+            "AND i.filePath IS NOT NULL " +
+            "AND m.certification IS NOT NULL " +
             "AND NOT EXISTS (SELECT r FROM Review r WHERE r.movie = m AND r.member.id = :memberId) " +
-            "ORDER BY m.popularity")
-    Slice<Movie> findMoviesByGenreAndPopularity(@Param("genreId") Long genreId, @Param("memberId") Long memberId, Pageable pageable);
+            "ORDER BY m.popularity, m.voteAvg")
+    Slice<Movie> findMoviesByGenreAndPopularity(
+            @Param("genreId") Long genreId,
+            @Param("memberId") Long memberId,
+            Pageable pageable
+    );
 
     @Query("SELECT DISTINCT m FROM Movie m " +
             "JOIN m.movieGenres mg " +
