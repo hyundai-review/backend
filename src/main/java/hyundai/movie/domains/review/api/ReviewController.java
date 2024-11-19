@@ -43,7 +43,7 @@ public class ReviewController {
     }
 
     @Valid
-    @PostMapping(value = "/photo/{movieId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/photo/{movieId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, "multipart/form-data;charset=UTF-8"})
     public ResponseEntity<PhotoReviewCreateResponse> createPhotoReview(@PathVariable Long movieId,
             @RequestParam("rating") Integer rating, @RequestParam("content") String content,
             @RequestParam("isSpoil") Boolean isSpoil,
