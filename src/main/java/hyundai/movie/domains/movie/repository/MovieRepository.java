@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,9 +27,10 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "ORDER BY m.voteAvg")
     Slice<Movie> findMoviesByVoteAvg(@Param("memberId") Long memberId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"movieGenres", "movieGenres.genre", "images"})
     @Query("SELECT DISTINCT m FROM Movie m " +
-            "JOIN FETCH m.movieGenres mg " +
-            "JOIN FETCH m.images i " +
+            "JOIN m.movieGenres mg " +
+            "JOIN m.images i " +
             "WHERE mg.genre.id = :genreId " +
             "AND i.isPoster = true " +
             "AND i.filePath IS NOT NULL " +
