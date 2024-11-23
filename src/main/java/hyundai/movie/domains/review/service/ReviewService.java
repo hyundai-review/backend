@@ -284,7 +284,7 @@ public class ReviewService {
 
     // 최신 리뷰 10개
     public RecentReviewResponse getRecentReviews() {
-        List<Review> reviews = reviewRepository.findTop10ByPhotocardIsNotNullOrderByCreatedAtDesc();
+        List<Review> reviews = reviewRepository.findTop30ByPhotocardIsNotNullOrderByCreatedAtDesc();
 
         if (reviews.isEmpty()) {
             return new RecentReviewResponse(Collections.emptyList());
